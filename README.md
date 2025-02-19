@@ -1,4 +1,5 @@
 # ML
+
 ML - Machine Learning presso l'Università degli Studi di Parma (6 CFU).
 
 # Development Environment with Jupyter Notebook on Docker
@@ -62,8 +63,14 @@ If you are using VScode, you can install the [Jupiter extension](https://marketp
 
 Then, you can change the Jupiter kernel setting `localhost:8888` as the new one. This allows you to execute the Jupiter file locally.
 
-
 ## Personal directory
 
 If you wish use some notebooks please create a directory named `personal` inside `src/`.
 This folder will be automatically shared with the container and will not be tracked by git.
+
+## Data directory
+
+To share data between the host and the container, you can use the `data` directory. This directory will be automatically shared with the container.
+File related to the different lab can be found in the `data/laboratori/{lab_id}` (as example `data/laboratori/0102/` for the labs 0102) directory.
+
+> Files related to personal files can be found in the `data/personal` directory which will not be tracked by git.
