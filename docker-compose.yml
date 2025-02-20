@@ -7,8 +7,7 @@ services:
             context: .
             dockerfile: Dockerfile
         volumes:
-            - ./src:/home/jovyan/work
-            - ./data:/home/jovyan/data
+            - ./src:/home/jovyan/src
         ports:
             - 8888:8888
         command: "start-notebook.sh --NotebookApp.token="
