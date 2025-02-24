@@ -2,4 +2,7 @@
 *.ipynb_checkpoints
 *__pycache__
 
+# MacOs file
+**/.DS_Store
+
 src/personal
