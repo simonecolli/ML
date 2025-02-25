@@ -1,3 +1,7 @@
+
+```toc
+```
+
 # Introduzione
 
 ## Machine Learning e Deep Learning. Differenze?
@@ -28,11 +32,17 @@ da una grande mole di dati anche _non etichettati_.
 - valore atteso
 - variabili aleatorie congiunte
 
+
+### Variabile aleatoria
+
+Una variabile aleatoria è una variabile che può assumere valori differenti in corrispondenza di eventi casuali diversi.
+Le variabili aleatorie possono essere di 2 tipi:
+- discrete, possono assumere un numero di valori finito o numerabile.
+- continue, possono assumere un insieme continuo di valori possibili (es. un intervallo di numeri reali). 
+
 ### Funzione di massa, densità, ripartizione
 
-Sia $X$ una variabile aleatoria continua o discreta. Si definisce la sua
-**funzione di densità** (nel caso continuo) o **funzione di massa** (nel caso discreto)
-come la funzione $f$ o $p$ che verifica, rispettivamente:
+Sia $X$ una variabile aleatoria continua o discreta. Si definisce la sua **funzione di densità** (nel caso continuo) o **funzione di massa** (nel caso discreto) come la funzione $f$ o $p$ che verifica, rispettivamente:
 
 $$
 P(X \in A) = \int_{A}{f(x) dx}
