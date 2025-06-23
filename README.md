@@ -13,7 +13,7 @@ conda activate machine-learning
 pip install -r requirements.txt
 ```
 
-Then, you can change the Jupiter kernel setting the Conda environment as the new one.
+Then, you can change the Jupyter kernel setting the Conda environment as the new one.
 
 # Development Environment with Jupyter Notebook on Docker
 
