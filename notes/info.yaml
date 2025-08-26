@@ -1,0 +1,13 @@
+course:
+  code: 1009068
+  title: Introduzione Al Machine Learning
+  instructor:
+    name: Prof. Francesco Morandin
+    email: francesco.morandin@unipr.it
+  semester: 2
+  year: 2024/2025
+  language: Italiano
+
+resources:
+  website: https://elly2024.didattica.unipr.it/course/view.php?id=4857
+  telegram: https://t.me/+VMYyDWfrtAwwiUJZ

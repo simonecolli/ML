@@ -1,0 +1,567 @@
+\subsection{ANOVA a Due Vie (Two-Way ANOVA)}
+L'ANOVA a due vie si utilizza quando si vuole analizzare l'effetto di
+\textbf{due variabili categoriali} (o fattori) su una variabile di risposta
+numerica. Questo modello permette di studiare non solo l'effetto individuale di
+ciascun fattore (effetto principale), ma anche se l'effetto di un fattore
+dipende dal livello dell'altro (effetto di interazione).
+
+\paragraph{Notazione e Modelli}
+Sia \(Y_{ijk}\) la \(k\)-esima osservazione (o replica) per il livello \(i\) del
+primo fattore (righe) e il livello \(j\) del secondo fattore (colonne). La media
+della cella \((i,j)\) viene scomposta per separare i diversi effetti.
+
+\begin{definizione}{Modelli Additivo e con Interazione}{twoway-models-def}
+\begin{itemize}
+    \item \textbf{Modello con Interazione} (usato con repliche, \(l \ge 2\)):
+    scompone la media in quattro parti:
+    \[ \mu_{ij} = \mu + \alpha_i + \beta_j + \gamma_{ij} \]
+    dove \(\mu\) è la media globale, \(\alpha_i\) è l'effetto principale del
+    fattore di riga, \(\beta_j\) è l'effetto principale del fattore di colonna
+    e \(\gamma_{ij}\) è il \textbf{termine di interazione}.
+    
+    \item \textbf{Modello Additivo} (usato senza repliche, \(l=1\)): assume che
+    non ci sia interazione:
+    \[ \mu_{ij} = \mu + \alpha_i + \beta_j \]
+    In questo modello, l'effetto di un fattore è costante a tutti i livelli
+    dell'altro fattore. Per garantire l'unicità del modello, si impongono
+    vincoli di somma zero sugli effetti (\(\sum \alpha_i = 0, \sum \beta_j =
+    0\)).
+\end{itemize}
+\end{definizione}
+
+\paragraph{Analisi per il Modello Additivo (Senza Repliche)}
+Quando si ha una sola osservazione per cella (\(l=1\)), si assume che il modello
+sia additivo. La stima dei parametri e degli effetti si basa sulle medie di riga
+(\(\bar{Y}_{i*}\)), di colonna (\(\bar{Y}_{*j}\)) e sulla media generale
+(\(\bar{Y}_{**}\)).
+
+\begin{definizione}{Stimatori degli Effetti
+Principali}{main-effects-estimators-def}
+Gli effetti principali sono stimati come lo scostamento delle medie parziali
+dalla media generale:
+\[ \hat{\alpha}_i = \bar{Y}_{i*} - \bar{Y}_{**} \qquad \text{e} \qquad
+\hat{\beta}_j = \bar{Y}_{*j} - \bar{Y}_{**} \]
+\end{definizione}
+
+\begin{definizione}{Valori Previsti e Residui}{residuals-2way-def}
+Il valore previsto (o stimato) dal modello per la cella \((i,j)\) è
+\(\hat{Y}_{ij} = \bar{Y}_{i*} + \bar{Y}_{*j} - \bar{Y}_{**}\). I residui sono la
+differenza tra i valori osservati e quelli previsti:
+\[ R_{ij} = Y_{ij} - \hat{Y}_{ij} = Y_{ij} - \bar{Y}_{i*} - \bar{Y}_{*j} +
+\bar{Y}_{**} \]
+\end{definizione}
+
+\begin{definizione}{Stima della Varianza d'Errore}{error-variance-2way-def}
+La Somma dei Quadrati dell'Errore (\(SS_e\)) è la somma dei residui al
+quadrato. Lo stimatore corretto della varianza \(\sigma^2\), indipendente dalle
+ipotesi, è la Media dei Quadrati dell'Errore (\(MS_e\)):
+\[ \hat{\sigma}^2 = S_e^2 = MS_e = \frac{SS_e}{(m-1)(n-1)} \quad \text{dove}
+\quad SS_e = \sum_{i,j} R_{ij}^2 \]
+Questa stima, scalata, segue una distribuzione Chi-Quadrato:
+\(\frac{SS_e}{\sigma^2} \sim \chi^2_{(m-1)(n-1)}\).
+\end{definizione}
+
+L'analisi completa dei dati e i test di ipotesi vengono quindi riassunti nelle
+seguenti tabelle.
+
+\begin{table}[ht]
+    \centering
+    \caption{Tabella ANOVA a due fattori (caso senza repliche) - Scomposizione
+    della Varianza}
+    \begin{tabular}{l l l}
+        \toprule
+        \textbf{Fonte di variabilità} & \textbf{Somma di quadrati (SS)} &
+        \textbf{Gradi di libertà (df)} \\
+        \midrule
+        Riga (Fattore 1) & \(SS_r = n \sum (\bar{Y}_{i*} - \bar{Y}_{**})^2\) &
+        \(m-1\) \\
+        Colonna (Fattore 2) & \(SS_c = m \sum (\bar{Y}_{*j} - \bar{Y}_{**})^2\)
+        & \(n-1\) \\
+        Errore & \(SS_e = \sum (Y_{ij} - \bar{Y}_{i*} - \bar{Y}_{*j} +
+        \bar{Y}_{**})^2\) & \((m-1)(n-1)\) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[ht]
+    \centering
+    \caption{Tabella ANOVA a due fattori (caso senza repliche) - Test di
+    Ipotesi}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l l l l}
+        \toprule
+        \textbf{Ipotesi Nulla} & \textbf{Statistica del Test} & \textbf{Un test
+        con significatività \(\alpha\) deve...} & \textbf{p-dei-dati se
+        \(D_{ts}=v\)} \\
+        \midrule
+        \(H_0: \text{Tutte le } \alpha_i = 0\) & \(D_{ts} =
+        \frac{SS_r/(m-1)}{SS_e/((m-1)(n-1))}\) & rifiutare \(H_0\) se \(D_{ts} >
+        F_{\alpha, m-1, (m-1)(n-1)}\) & \(P(F_{m-1, (m-1)(n-1)} \ge v)\) \\
+        \(H_0: \text{Tutte le } \beta_j = 0\) & \(D_{ts} =
+        \frac{SS_c/(n-1)}{SS_e/((m-1)(n-1))}\) & rifiutare \(H_0\) se \(D_{ts} >
+        F_{\alpha, n-1, (m-1)(n-1)}\) & \(P(F_{n-1, (m-1)(n-1)} \ge v)\) \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+\begin{teorema}{Test F per il modello additivo}{anova-f-test-2way-add-thm}
+Per testare gli effetti principali si usano due distinte statistiche F, che
+confrontano la varianza spiegata da ciascun fattore con la varianza residua
+\(MS_e = S_e^2\).
+\begin{itemize}
+    \item \textbf{Test per le Righe}: \( F_r = \frac{MS_r}{S_e^2} \sim F(m-1,
+    (m-1)(n-1))\)
+    \item \textbf{Test per le Colonne}: \( F_c = \frac{MS_c}{S_e^2} \sim F(n-1,
+    (m-1)(n-1))\)
+\end{itemize}
+\end{teorema}
+
+\paragraph{Analisi per il Modello con Repliche}
+La presenza di repliche (\(l \ge 2\)) è fondamentale perché permette di
+stimare separatamente la media di ogni cella \(\mu_{ij}\) e, di conseguenza, di
+isolare l'effetto di interazione dalla variabilità casuale.
+
+\begin{itemize}
+    \item \textbf{Stimatori delle Medie e degli Effetti}: Lo stimatore naturale
+    per la media della cella \((i,j)\) è la media campionaria delle
+    osservazioni in quella cella:
+    \[ \hat{\mu}_{ij} = \bar{Y}_{ij*} = \frac{1}{l}\sum_{k=1}^{l}Y_{ijk} \]
+    Da questi si ricavano gli stimatori per gli effetti: \(\hat{\alpha}_i =
+    \bar{Y}_{i**}-\bar{Y}_{***}\), \(\hat{\beta}_j =
+    \bar{Y}_{*j*}-\bar{Y}_{***}\) e \(\hat{\gamma}_{ij} = \bar{Y}_{ij*} -
+    \bar{Y}_{i**} - \bar{Y}_{*j*} + \bar{Y}_{***} \).
+    \item \textbf{Residui e Stima della Varianza d'Errore}: I residui sono la
+    variabilità interna a ciascuna cella, attorno alla propria media:
+    \[ R_{ijk} = Y_{ijk} - \bar{Y}_{ij*} \]
+    La Somma dei Quadrati dell'Errore (\(SS_e\)) è la somma dei residui al
+    quadrato. Lo stimatore corretto e sempre valido della varianza \(\sigma^2\)
+    è la Media dei Quadrati dell'Errore (\(MS_e\)):
+    \[ \hat{\sigma}^2 = S_e^2 = MS_e = \frac{SS_e}{mn(l-1)} \quad \text{dove}
+    \quad SS_e = \sum_{i,j,k} R_{ijk}^2 \]
+\end{itemize}
+L'analisi completa, che scompone la varianza totale, è riassunta nelle tabelle
+seguenti.
+
+\begin{table}[ht]
+    \centering
+    \caption{Tabella ANOVA a due fattori (caso con repliche) - Scomposizione
+    della Varianza}
+    \begin{tabular}{l l l}
+        \toprule
+        \textbf{Fonte di variabilità} & \textbf{Somma di quadrati (SS)} &
+        \textbf{Gradi di libertà (df)} \\
+        \midrule
+        Riga (Fattore 1) & \(SS_r = nl \sum (\bar{Y}_{i**} - \bar{Y}_{***})^2\)
+        & \(m-1\) \\
+        Colonna (Fattore 2) & \(SS_c = ml \sum (\bar{Y}_{*j*} -
+        \bar{Y}_{***})^2\) & \(n-1\) \\
+        Interazione & \(SS_{int} = l \sum (\bar{Y}_{ij*} - \bar{Y}_{i**} -
+        \bar{Y}_{*j*} + \bar{Y}_{***})^2\) & \((m-1)(n-1)\) \\
+        Errore & \(SS_e = \sum (Y_{ijk} - \bar{Y}_{ij*})^2\) & \(mn(l-1)\) \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[ht]
+    \centering
+    \caption{Tabella ANOVA a due fattori (caso con repliche) - Test di Ipotesi}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l l l l}
+        \toprule
+        \textbf{Ipotesi Nulla} & \textbf{Statistica del Test} & \textbf{Un test
+        con significatività \(\alpha\) deve...} & \textbf{p-dei-dati se
+        \(F=v\)} \\
+        \midrule
+        \(H_0^{int}\): Le \(\gamma_{ij}\) sono tutte nulle & \(F_{int} =
+        \frac{SS_{int}/((m-1)(n-1))}{SS_e/(mn(l-1))}\) & rifiutare \(H_0\) se
+        \(F_{int} > F_{\alpha, (m-1)(n-1), mn(l-1)}\) & \(P(F_{(m-1)(n-1),
+        mn(l-1)} \ge v)\) \\
+        \(H_0^r\): Le \(\alpha_i\) sono tutte nulle & \(F_r =
+        \frac{SS_r/(m-1)}{SS_e/(mn(l-1))}\) & rifiutare \(H_0\) se \(F_r >
+        F_{\alpha, m-1, mn(l-1)}\) & \(P(F_{m-1, mn(l-1)} \ge v)\) \\
+        \(H_0^c\): Le \(\beta_j\) sono tutte nulle & \(F_c =
+        \frac{SS_c/(n-1)}{SS_e/(mn(l-1))}\) & rifiutare \(H_0\) se \(F_c >
+        F_{\alpha, n-1, mn(l-1)}\) & \(P(F_{n-1, mn(l-1)} \ge v)\) \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+\begin{teorema}{Test F per il modello con
+interazione}{anova-f-test-2way-int-thm}
+La procedura di test è gerarchica. Il test per l'interazione (\(H_0:
+\gamma_{ij} = 0\)) è il primo e più importante da valutare.
+\[ F_{int} = \frac{MS_{int}}{S_e^2} \sim F((m-1)(n-1), mn(l-1)) \]
+Se l'interazione non è significativa, si procede a testare gli effetti
+principali.
+\begin{itemize}
+    \item \textbf{Righe}: \( F_r = \frac{MS_r}{S_e^2} \sim F(m-1, mn(l-1))\)
+    \item \textbf{Colonne}: \( F_c = \frac{MS_c}{S_e^2} \sim F(n-1, mn(l-1))\)
+\end{itemize}
+\end{teorema}
+\begin{nota}{Semplificazione del Modello}{model-simplification-note}
+Se l'esito del test per uno degli effetti principali (es. righe) porta ad
+accettare l'ipotesi nulla, si può considerare di eliminare quella variabile dal
+modello, riducendo di fatto l'analisi a un'ANOVA a una via sul fattore
+rimanente.
+\end{nota}
+
+
+
+\section{Il Test del Chi-Quadrato}
+
+Il test del Chi-Quadrato (\(\chi^2\)) è una delle famiglie più importanti di
+test statistici. Viene utilizzato principalmente come \textbf{test di
+adattamento} (\textit{goodness-of-fit}) per verificare se una distribuzione di
+dati osservata si adegua a una distribuzione teorica attesa.
+
+Le principali applicazioni includono:
+\begin{itemize}
+    \item \textbf{Test elementare}: per distribuzioni discrete con un numero
+    limitato di categorie (es. testare l'equità di un dado).
+    \item \textbf{Generalizzazione}: per distribuzioni con molti valori o
+    continue.
+    \item \textbf{Test di adattamento a famiglie di distribuzioni}: per
+    verificare se i dati seguono una certa famiglia di distribuzioni (es.
+    Gaussiana) senza specificarne i parametri.
+    \item \textbf{Tabelle di contingenza}: per verificare l'indipendenza tra due
+    variabili categoriali.
+\end{itemize}
+
+\subsection{Test del Chi-Quadrato Elementare (Goodness-of-Fit)}
+Questo test è il caso base e si applica quando si vuole confrontare la
+distribuzione di un campione con una specifica distribuzione discreta.
+
+\paragraph{Scopo e Ipotesi del Test}
+Si parte da un campione \(X_1, \dots, X_n\) proveniente da una distribuzione
+incognita \(\phi\). L'obiettivo è verificare se i dati si conformano a una
+distribuzione "candidata" \(\phi_0\) completamente specificata.
+\begin{itemize}
+    \item \textbf{Ipotesi Nulla (\(H_0\))}: la distribuzione del campione è
+    quella candidata.
+    \[ H_0: \phi = \phi_0 \]
+    \item \textbf{Ipotesi Alternativa (\(H_1\))}: la distribuzione del campione
+    è diversa da quella candidata.
+    \[ H_1: \phi \neq \phi_0 \]
+\end{itemize}
+
+\paragraph{Frequenze Osservate e Attese}
+La procedura si basa sul confronto tra le frequenze osservate nel campione e
+quelle che ci aspetteremmo se l'ipotesi nulla fosse vera.
+\begin{itemize}
+    \item \textbf{Frequenze Osservate (\(O_j\))}: si conta quante volte ciascuna
+    delle \(k\) categorie possibili appare nel campione.
+    \[ O_j = \text{numero di volte in cui è uscito il valore } j \]
+    \item \textbf{Frequenze Attese (\(A_j\))}: sono le frequenze che ci
+    aspetteremmo in media se i dati seguissero la distribuzione \(\phi_0\). Si
+    calcolano come:
+    \[ A_j = n \cdot p_{0,j} \]
+    dove \(n\) è la numerosità del campione e \(p_{0,j}\) è la probabilità
+    della categoria \(j\) secondo \(\phi_0\).
+\end{itemize}
+
+\paragraph{La Statistica del Test}
+Per misurare la discrepanza tra le frequenze osservate e quelle attese, si usa
+la statistica Chi-Quadrato di Pearson.
+
+\begin{definizione}{Statistica Chi-Quadrato di Pearson}{pearson-chi2-def}
+La statistica del test, indicata con \(W\) o \(\chi^2\), è calcolata come:
+\[ W = \sum_{j=1}^{k} \frac{(O_j - A_j)^2}{A_j} \]
+Questa statistica è "piccola" quando i dati osservati sono vicini a quelli
+attesi (supportando \(H_0\)) e "grande" quando c'è una forte discrepanza
+(supportando \(H_1\)).
+\end{definizione}
+
+\begin{teorema}{Distribuzione della Statistica del Test}{chi2-dist-thm}
+Sotto l'ipotesi nulla \(H_0\), la statistica del test \(W\) segue
+asintoticamente (per \(n\) grande) una \textbf{distribuzione Chi-Quadrato con
+\(k-1\) gradi di libertà}:
+\[ W \stackrel{H_0}{\sim} \chi^2_{k-1} \]
+Poiché valori grandi della statistica forniscono evidenza contro \(H_0\), il
+test è \textbf{unilaterale destro}.
+\end{teorema}
+
+\begin{nota}{Condizioni di Validità e Potenza}{chi2-validity-note}
+\begin{itemize}
+    \item \textbf{Regola Pratica}: l'approssimazione alla distribuzione
+    \(\chi^2\) è considerata valida se tutte le frequenze attese sono \(A_j \ge
+    1\) e almeno l'80\% di esse sono \(A_j \ge 5\).
+    \item \textbf{Potenza}: il test del Chi-Quadrato è noto per essere poco
+    potente. Richiede scostamenti notevoli o campioni molto grandi per rigettare
+    \(H_0\) quando le differenze tra \(\phi\) e \(\phi_0\) sono modeste.
+    \item \textbf{Statistica G}: negli ultimi anni si tende a preferire la
+    statistica G (o del rapporto di verosimiglianza), che segue la stessa
+    distribuzione \(\chi^2_{k-1}\) ma con un'approssimazione spesso migliore:
+    \[ G = 2 \sum_{j=1}^{k} O_j \ln\left(\frac{O_j}{A_j}\right) \]
+\end{itemize}
+\end{nota}
+
+\subsection{Estensioni del Test del Chi-Quadrato}
+Il test elementare può essere generalizzato per affrontare due scenari più
+complessi: l'adattamento a distribuzioni continue e l'adattamento a famiglie di
+distribuzioni con parametri non specificati.
+
+\paragraph{Test di Adattamento per Leggi Continue}
+Quando la distribuzione candidata \(\phi_0\) è continua (es. Esponenziale,
+Normale, etc.), non è possibile contare le occorrenze di singoli valori. La
+procedura viene quindi adattata "discretizzando" il supporto della
+distribuzione.
+
+\begin{enumerate}
+    \item \textbf{Binning}: Si suddivide il dominio della variabile in \(k\)
+    intervalli (o \textit{bin}) disgiunti, \(B_1, B_2, \dots, B_k\).
+    \item \textbf{Frequenze Osservate}: Si contano quante osservazioni del
+    campione cadono in ciascun bin per ottenere le frequenze osservate \(O_j\).
+    \item \textbf{Frequenze Attese}: Si calcola la probabilità \(p_{0,j}\) che
+    un'osservazione cada nel bin \(j\) secondo la distribuzione nulla
+    \(\phi_0\). Per una distribuzione continua con densità \(f_0(x)\), questo
+    si ottiene integrando:
+    \[ p_{0,j} = P(X \in B_j) = \int_{B_j} f_0(x) dx \]
+    Le frequenze attese sono quindi \(A_j = n \cdot p_{0,j}\).
+\end{enumerate}
+Una volta ottenute le frequenze \(O_j\) e \(A_j\), si procede con la statistica
+di Pearson \(W\) e il confronto con la distribuzione \(\chi^2_{k-1}\)
+esattamente come nel caso elementare.
+
+\begin{nota}{Strategia di Binning}{binning-strategy-note}
+A parità di \(k\), il test è più potente e l'approssimazione alla \(\chi^2\)
+è migliore se le frequenze attese \(A_j\) sono più grandi possibile. Per
+questo motivo, la strategia ottimale non è creare bin di larghezza uguale, ma
+\textbf{bin equiprobabili}, ovvero intervalli scelti in modo tale che la
+probabilità \(p_{0,j}\) (e quindi la frequenza attesa \(A_j\)) sia la stessa
+per ogni bin. La potenza del test è comunque legata al numero e alla posizione
+dei bin scelti.
+\end{nota}
+
+\paragraph{Test di Adattamento a Famiglie di Distribuzioni}
+Spesso non si vuole testare l'adattamento a una distribuzione
+\textit{completamente} specificata, ma a una \textit{famiglia} di distribuzioni,
+lasciando i parametri liberi. Un esempio classico è il test di Gaussianità.
+\begin{itemize}
+    \item \textbf{Ipotesi}: \(H_0: X \sim N(\mu, \sigma^2)\) con \(\mu\) e
+    \(\sigma^2\) non specificati.
+\end{itemize}
+La procedura è la seguente:
+\begin{enumerate}
+    \item \textbf{Stima dei Parametri}: Si stimano i parametri incogniti della
+    distribuzione a partire dal campione (es. \(\hat{\mu} = \bar{x}\) e
+    \(\hat{\sigma}^2 = s^2\)).
+    \item \textbf{Test Standard}: si esegue il test di adattamento del
+    Chi-Quadrato (con la procedura di binning vista sopra) usando come
+    distribuzione nulla \(\phi_0\) quella della famiglia specificata, ma con i
+    parametri appena stimati (es. \(N(\bar{x}, s^2)\)).
+    \item \textbf{Correzione dei Gradi di Libertà}: la distribuzione della
+    statistica del test \(W\) è ancora una Chi-Quadrato, ma i suoi gradi di
+    libertà vengono ridotti.
+\end{enumerate}
+
+\begin{teorema}{Gradi di Libertà con Parametri
+Stimati}{df-estimated-params-thm}
+Se si stimano \(s\) parametri dal campione per definire la distribuzione nulla
+\(\phi_0\), la statistica del test \(W\) si distribuisce come una Chi-Quadrato
+con \(k-1-s\) gradi di libertà.
+\[ W \stackrel{H_0}{\sim} \chi^2_{k-1-s} \]
+Nel caso del test di Gaussianità, si stimano \(s=2\) parametri (\(\mu\) e
+\(\sigma^2\)), quindi i gradi di libertà sono \(k-3\).
+\end{teorema}
+
+\begin{nota}{Uso Pratico dei Test di
+Adattamento}{goodness-of-fit-practical-note}
+L'uso di test formali per verificare a priori o a posteriori le assunzioni di un
+modello (es. la Gaussianità dei residui) non è sempre una buona idea. Con
+campioni molto grandi, questi test diventano "troppo potenti" e possono
+rigettare l'ipotesi nulla per deviazioni minime e praticamente irrilevanti.
+L'ipotesi che spesso ci interessa non è se i dati siano \textit{esattamente}
+Normali, ma se siano \textit{sufficientemente vicini} alla Normalità perché le
+nostre procedure funzionino. Per questo, è spesso preferibile affiancare o
+sostituire il test formale con un \textbf{controllo qualitativo e grafico} (es.
+un Q-Q plot).
+\end{nota}
+
+
+
+\subsection{Test del Chi-Quadrato per Tabelle di Contingenza}
+Questa è una delle applicazioni più comuni del test del Chi-Quadrato e serve a
+verificare se esista un'associazione tra due variabili categoriali. A differenza
+della regressione o dell'ANOVA, questa analisi è simmetrica: non si definisce
+una variabile di ingresso e una di uscita, ma si studia la relazione reciproca
+\(X \leftrightarrow Y\).
+
+\paragraph{Scopo e Ipotesi}
+L'obiettivo del test è determinare se due variabili categoriali sono
+statisticamente indipendenti o se sono associate.
+\begin{itemize}
+    \item \textbf{Ipotesi Nulla (\(H_0\))}: Le due variabili sono indipendenti.
+    In termini di probabilità, la probabilità congiunta è il prodotto delle
+    probabilità marginali: \( P(X=i, Y=j) = P(X=i) \cdot P(Y=j) \).
+    \item \textbf{Ipotesi Alternativa (\(H_1\))}: Le due variabili non sono
+    indipendenti (esiste un'associazione).
+\end{itemize}
+Si tratta di un test \textbf{non parametrico}, in quanto non fa alcuna ipotesi
+sulla famiglia di distribuzione sottostante, il che lo rende meno potente di
+test come l'ANOVA se le assunzioni di quest'ultima sono soddisfatte.
+
+\paragraph{Frequenze Osservate e Attese}
+Il test si basa sul confronto tra le frequenze congiunte osservate nel campione
+e quelle che ci aspetteremmo in un'ipotetica situazione di indipendenza.
+\begin{itemize}
+    \item \textbf{Frequenze Osservate (\(O_{ij}\))}: sono i conteggi effettivi
+    per ogni cella della tabella di contingenza, ovvero il numero di
+    osservazioni che presentano simultaneamente la categoria \(i\) della prima
+    variabile e la categoria \(j\) della seconda.
+    \item \textbf{Frequenze Attese (\(A_{ij}\))}: sono i conteggi che ci
+    aspetteremmo in ogni cella se \(H_0\) (indipendenza) fosse vera. Poiché le
+    probabilità marginali sono incognite, vengono stimate dai dati. La formula
+    per le frequenze attese è:
+    \[ A_{ij} = \frac{(\text{Totale della riga } i) \cdot (\text{Totale della
+    colonna } j)}{\text{Totale generale}} \]
+\end{itemize}
+
+\begin{definizione}{Statistica del Test per l'Indipendenza}{indep-test-stat-def}
+La statistica del test è la consueta statistica Chi-Quadrato di Pearson,
+calcolata su tutte le \(m \times n\) celle della tabella:
+\[ W = \sum_{i=1}^{m} \sum_{j=1}^{n} \frac{(O_{ij} - A_{ij})^2}{A_{ij}} \]
+\end{definizione}
+
+\begin{teorema}{Distribuzione e Gradi di Libertà}{chi2-contingency-thm}
+Sotto l'ipotesi nulla di indipendenza, la statistica del test \(W\) segue
+asintoticamente una distribuzione Chi-Quadrato con \((m-1)(n-1)\) gradi di
+libertà, dove \(m\) è il numero di righe e \(n\) è il numero di colonne.
+\[ W \stackrel{H_0}{\sim} \chi^2_{(m-1)(n-1)} \]
+\end{teorema}
+
+\begin{dimostrazione}{Calcolo dei Gradi di Libertà}{dof-contingency-dem}
+La regola generale per i gradi di libertà è:
+\[
+gdl = (\text{numero categorie}) - 1 - (\text{numero parametri stimati})
+\]
+\begin{itemize}
+    \item Numero totale di categorie: \(m \cdot n\).
+    \item Per stimare le frequenze attese, abbiamo dovuto stimare le
+    probabilità marginali. Per le \(m\) righe, i parametri liberi sono \(m-1\)
+    (poiché la somma deve fare 1). Per le \(n\) colonne, i parametri liberi
+    sono \(n-1\).
+    \item Numero totale di parametri stimati: \((m-1) + (n-1)\).
+\end{itemize}
+Quindi: \( gdl = (m \cdot n) - 1 - [(m-1) + (n-1)] = mn - 1 - m + 1 - n + 1 = mn
+- m - n + 1 = (m-1)(n-1) \).
+\end{dimostrazione}
+
+\begin{nota}{Note Pratiche}{contingency-practical-notes}
+\begin{itemize}
+    \item \textbf{Variabili Continue}: Se una o entrambe le variabili non sono
+    discrete con poche categorie, devono essere prima "discretizzate" tramite
+    binning.
+    \item \textbf{Condizioni di Validità}: Anche in questo caso,
+    l'approssimazione alla \(\chi^2\) è valida se le frequenze attese non sono
+    troppo piccole (la regola pratica è che l'80\% delle celle abbia \(A_{ij}
+    \ge 5\) e tutte abbiano \(A_{ij} \ge 1\)).
+\end{itemize}
+\end{nota}
+
+
+\section{Versioni Esatte dei Test del Chi-Quadro}
+L'approssimazione della statistica \(W\) con una distribuzione \(\chi^2\) è un
+risultato asintotico, valido per grandi campioni. Quando le frequenze attese
+sono basse e la "rule of thumb" non è rispettata, questa approssimazione non è
+più affidabile. In questi casi, si ricorre a versioni esatte del test, che
+calcolano la distribuzione della statistica del test sotto \(H_0\) senza fare
+affidamento sull'approssimazione.
+
+Questo si può ottenere in due modi:
+\begin{itemize}
+    \item \textbf{Metodo esatto (esaustione)}: tramite calcolo combinatorio, si
+    enumerano tutti i possibili risultati e si calcola la probabilità esatta di
+    ciascuno. È fattibile solo per problemi di piccole dimensioni.
+    \item \textbf{Simulazione Monte Carlo (MCS)}: si genera un gran numero di
+    campioni casuali dalla distribuzione nulla \(\phi_0\), si calcola la
+    statistica del test per ciascuno e si costruisce una distribuzione empirica,
+    che approssima quella vera.
+\end{itemize}
+
+\subsection{Test Esatto di Goodness-of-Fit}
+Supponiamo di voler eseguire un test di adattamento, ma le frequenze attese sono
+troppo piccole.
+
+\begin{esempio}{Test esatto per "titolo di studio"}{exact-gof-example}
+Consideriamo un campione di \(n=20\) studenti e vogliamo testare se la
+distribuzione del loro titolo di studio si conforma a una \(\phi_0\) data. Se le
+frequenze attese calcolate \(A_j = n \cdot p_{0,j}\) risultano essere, ad
+esempio, \([2, 10, 6, 2]\), la regola pratica per l'uso della \(\chi^2\) non è
+rispettata. Non possiamo quindi fidarci del p-value ottenuto da una
+distribuzione \(\chi^2_3\). Per calcolare il p-value corretto, dobbiamo trovare
+la vera distribuzione della statistica \(W\) sotto \(H_0\). Con un metodo di
+simulazione Monte Carlo, ad esempio, possiamo generare 100.000 campioni da
+\(\phi_0\), calcolare \(W\) per ciascuno, e usare la distribuzione empirica di
+questi valori per calcolare il p-value.
+\end{esempio}
+
+\subsection{Il Test Esatto di Fisher per Tabelle 2x2}
+Il test esatto di Fisher è la soluzione combinatoria esatta per il test di
+indipendenza in una tabella di contingenza 2x2. È particolarmente utile quando
+le numerosità campionarie sono piccole.
+
+\paragraph{L'Idea Fondamentale}
+Invece di usare la statistica \(W\), il test si concentra su una delle quattro
+celle della tabella, tipicamente quella in alto a sinistra (\(O_{11}\)). L'idea
+chiave è che, una volta \textbf{fissati i totali marginali} della tabella, il
+valore di una singola cella determina i valori di tutte le altre.
+
+\begin{table}[ht]
+    \centering
+    \caption{Tabella di contingenza 2x2 con notazione dei marginali.}
+    \begin{tabular}{c|cc|c}
+        & Colonna 1 & Colonna 2 & Totale Riga \\
+        \hline
+        Riga 1 & \(O_{11}\) & \(O_{12}\) & \(c\) \\
+        Riga 2 & \(O_{21}\) & \(O_{22}\) & \(d\) \\
+        \hline
+        Totale Colonna & \(a\) & \(b\) & \(n\) \\
+    \end{tabular}
+\end{table}
+
+Il problema è analogo a un'estrazione da un'urna. Immaginiamo un'urna con \(n\)
+palline, di cui \(a\) nere (colonna 1) e \(b\) bianche (colonna 2). Se estraiamo
+\(c\) palline (la prima riga), il numero di palline nere estratte (\(k\))
+corrisponde al valore di \(O_{11}\). Questa logica porta direttamente alla
+distribuzione di probabilità esatta.
+
+\begin{teorema}{Distribuzione per il Test di Fisher}{fisher-test-dist-thm}
+Assumendo l'ipotesi nulla \(H_0\) di indipendenza tra le due variabili e
+condizionando ai totali marginali, la probabilità di osservare un valore \(k\)
+nella cella \((1,1)\) di una tabella 2x2 segue la \textbf{distribuzione
+Ipergeometrica}:
+\[ P(O_{11}=k | H_0, \text{marginali}) = \frac{\binom{a}{k}
+\binom{b}{c-k}}{\binom{n}{c}} \]
+\end{teorema}
+
+\begin{esempio}{Calcolo della distribuzione esatta}{fisher-example}
+    Consideriamo una tabella 2x2 con totali marginali: \(c=8\) (riga 1),
+    \(a=21\) (colonna 1), \(b=21\) (colonna 2), e \(n=42\). Sotto \(H_0\), la
+    probabilità per ogni possibile valore di \(O_{11}\) (da 0 a 8) è data
+    dalla distribuzione Ipergeometrica. La tabella seguente e il grafico a barre
+    mostrano questa distribuzione.
+
+    \centering
+    \begin{tabular}{c c}
+        \toprule
+        \textbf{k} & \textbf{P(\(O_{11}=k\))} \\
+        \midrule
+        0 & 0.00172 \\
+        1 & 0.02069 \\
+        2 & 0.09655 \\
+        3 & 0.22930 \\
+        4 & 0.30348 \\
+        5 & 0.22930 \\
+        6 & 0.09655 \\
+        7 & 0.02069 \\
+        8 & 0.00172 \\
+        \bottomrule
+    \end{tabular}
+\end{esempio}
+
+\paragraph{Calcolo del p-value}
+Il test è tipicamente bilaterale. Il p-value si calcola sommando le
+probabilità di tutti i risultati altrettanto o più "estremi" (rari) di quello
+osservato. Se la distribuzione è simmetrica, come nell'esempio sopra, e
+osserviamo \(O_{11}=1\), il p-value sarà la somma delle probabilità nelle due
+code: \( P(O_{11} \le 1) + P(O_{11} \ge 7) \approx 0.02069 + 0.00172 + 0.02069 +
+0.00172 = 0.0448 \).

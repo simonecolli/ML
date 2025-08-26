@@ -1,0 +1,305 @@
+\section{Principal Component Analysis (PCA)}\label{sec:pca}
+
+\subsection{Richiami utili}
+
+\begin{nota}{Spettro di una matrice simmetrica}{spettro}
+Visto che \( \Sigma \in \mathcal{M}_{n \times n}\) è simmetrica e definita positiva (come ogni matrice di covarianza), allora:
+\begin{itemize}
+  \item ammette $n$ autovalori reali e non negativi: \( \lambda_i \geq 0 \);
+  \item esiste una base ortonormale di autovettori \( v_i \);
+  \item gli autovettori sono ortogonali tra loro;
+  \item \( \Sigma v_i = \lambda_i v_i \) equivale a dire che \( \Sigma = V \Lambda V^\mathsf{T} \).
+\end{itemize}
+\end{nota}
+
+\subsection{Definizione}
+
+La \textbf{Principal Component Analysis (PCA)} è una trasformazione lineare che serve a decorrelare le componenti di un dataset multidimensionale. È comunemente utilizzata per la riduzione della dimensionalità, il pre-processing e la visualizzazione.
+
+\begin{definizione}{Componenti principali}{pca}
+La PCA consiste nel trovare una base ortonormale nello spazio dei dati tale che:
+\begin{itemize}
+  \item le nuove coordinate (\emph{componenti principali}) siano incorrelate tra loro;
+  \item la prima componente abbia la massima varianza possibile;
+  \item ogni successiva componente massimizzi la varianza residua, mantenendosi ortogonale alle precedenti.
+\end{itemize}
+\end{definizione}
+
+\subsection{Interpretazione geometrica}
+
+La PCA applica una \textbf{rotazione dello spazio} dei dati centrati (cioè con media nulla), allineando gli assi principali con le direzioni di massima varianza. Se \( X \in \mathbb{R}^{n \times d} \) è il dataset centrato:
+\[
+Y = V^\mathsf{T} X
+\]
+dove \( V \in \mathbb{R}^{d \times d} \) è la matrice degli autovettori di \( \Sigma = \mathrm{Cov}(X) \). Le nuove variabili \( Y \) sono scorrelate e ordinate per varianza decrescente.
+
+\subsection{Autovalori e autovettori della covarianza}
+
+\begin{teorema}{Teorema spettrale per la matrice di covarianza}{pca-spettrale}
+Sia \( \Sigma \in \mathbb{R}^{d \times d} \) una matrice di covarianza, cioè reale, simmetrica e definita positiva. Allora esistono:
+\begin{itemize}
+  \item una base ortonormale di autovettori \( v_1, \dots, v_d \in \mathbb{R}^d \);
+  \item autovalori reali non negativi \( \lambda_1, \dots, \lambda_d \geq 0 \);
+\end{itemize}
+tali che:
+\[
+\Sigma v_k = \lambda_k v_k, \qquad v_j^\mathsf{T} v_k = \delta_{jk}
+\]
+cioè:
+\[
+\Sigma = V \Lambda V^\mathsf{T}
+\]
+dove \( V = [v_1 \; \dots \; v_d] \) è ortogonale e \( \Lambda = \mathrm{diag}(\lambda_1, \dots, \lambda_d) \).
+\end{teorema}
+
+\begin{proposizione}{La matrice degli autovettori è ortogonale}{pca-matrice-ortogonale}
+Sia \( \Sigma \in \mathbb{R}^{d \times d} \) una matrice simmetrica. Siano \( v_1, \dots, v_d \in \mathbb{R}^d \) autovettori ortonormali di \( \Sigma \), e si definisca \( V := [v_1 \ \dots \ v_d] \in \mathbb{R}^{d \times d} \). Allora:
+\[
+V^\mathsf{T} V = I \quad \text{e} \quad VV^\mathsf{T} = I
+\]
+cioè \( V \) è una matrice ortogonale.
+\end{proposizione}
+
+\begin{dimostrazione}{}{pca-matrice-ortogonale}
+Osserviamo che l’elemento \( (i, j) \) della matrice \( V^\mathsf{T} V \) si calcola come:
+\[
+[V^\mathsf{T} V]_{ij} = \sum_{k=1}^d [V^\mathsf{T}]_{ik} [V]_{kj}
+= \sum_{k=1}^d v_{k,i} v_{k,j}
+\]
+
+Notiamo che:
+\[
+\sum_{k=1}^d v_{k,i} v_{k,j} = v_i^\mathsf{T} v_j = 
+\begin{cases}
+1 & \text{se } i = j \\
+0 & \text{se } i \neq j
+\end{cases}
+= \delta_{ij}
+\]
+
+Quindi:
+\[
+V^\mathsf{T} V = I \quad \text{(matrice identità)}
+\]
+
+Segue che \( V \) è ortogonale, quindi \( V^\mathsf{T} = V^{-1} \).  
+Da questo deduciamo anche \( VV^\mathsf{T} = I \), e quindi:
+\[
+VV^\mathsf{T} = V V^{-1} = I
+\]
+
+In conclusione, \( V \) è una rotazione (o riflessione), cioè una trasformazione ortogonale dello spazio.
+\end{dimostrazione}
+
+\begin{proposizione}{Diagonalizzazione spettrale: \texorpdfstring{\( \Sigma V = V \Lambda \)}{Sigma V = V Lambda}}{pca-spettrale-diretta}
+Sia \( \Sigma \in \mathbb{R}^{d \times d} \) una matrice simmetrica, e siano \( v_1, \dots, v_d \) i suoi autovettori ortonormali associati agli autovalori \( \lambda_1, \dots, \lambda_d \). Costruiamo:
+\[
+V := [v_1 \; v_2 \; \dots \; v_d], \quad \Lambda := \mathrm{diag}(\lambda_1, \dots, \lambda_d)
+\]
+Allora:
+\[
+\Sigma V = V \Lambda
+\]
+\end{proposizione}
+
+\begin{dimostrazione}{}{}
+    \paragraph{Versione vista a lezione} Verifichiamo che \( \Sigma V = V \Lambda \) calcolando il generico elemento \( (i, j) \) di entrambi i membri.
+
+A sinistra:
+\[
+[\Sigma V]_{ij} = \sum_k \Sigma_{ik} V_{kj}
+= \sum_k \Sigma_{ik} (v_j)_k = [\Sigma v_j]_i
+\]
+Poiché \( v_j \) è autovettore di \( \Sigma \), abbiamo:
+\[
+\Sigma v_j = \lambda_j v_j \quad \Rightarrow \quad [\Sigma v_j]_i = \lambda_j (v_j)_i = \lambda_j V_{ij}
+\]
+
+A destra:
+\[
+[V \Lambda]_{ij} = \sum_k V_{ik} \Lambda_{kj} = V_{ij} \lambda_j = \lambda_j V_{ij}
+\]
+
+Poiché i due membri coincidono elemento per elemento:
+\[
+    [V \Lambda]_{ij} = \sum_k V_{ik} \Lambda_{kj} \stackrel{\text{\tiny (\(\Lambda_{ij = 0} \forall k \neq j\))}}{=} V_{ij} \lambda_j = \lambda_j V_{ij}
+\]
+
+\paragraph{Alternativa}
+
+Abbiamo già verificato che:
+\[
+\Sigma = V \Lambda V^\mathsf{T} ,\quad V^\mathsf{T}V = VV^\mathsf{T} = I
+\]
+Moltiplicando ambo i membri della prima equazione per $V$ otteniamo:
+\begin{align*}
+    \Sigma &= V \Lambda V^\mathsf{T} \\
+    \Sigma V &= V \Lambda (V^\mathsf{T} V) \\
+    \Sigma V &= V \Lambda
+\end{align*}
+
+\end{dimostrazione}
+
+\subsection{PCA e decorrelazione}
+
+\begin{proposizione}{Decorrelazione delle componenti tramite PCA}{pca-covarianza-diagonale}
+Sia \( X \in \mathbb{R}^{d \times n} \) un dataset centrato con matrice di covarianza \( \Sigma = \mathrm{Cov}(X) \). Sia \( V \in \mathbb{R}^{d \times d} \) una matrice ortogonale composta dagli autovettori di \( \Sigma \), e sia:
+\[
+Y = V^\mathsf{T} X
+\]
+la trasformazione PCA. Allora:
+\[
+\mathrm{Cov}(Y) = \Lambda
+\]
+dove \( \Lambda \) è la matrice diagonale degli autovalori di \( \Sigma \).
+\end{proposizione}
+
+\begin{dimostrazione}{}{}
+Poiché \( Y = V^\mathsf{T} X \), la matrice di covarianza di \( Y \) è:
+\[
+\mathrm{Cov}(Y) = \mathrm{Cov}(V^\mathsf{T} X)
+\]
+
+Usando la \Cref{prop:cov_trasformata} sulla variazione della covarianza in una trasformazione lineare otteniamo:
+\[
+    \mathrm{Cov}(Y) 
+    = V^\mathsf{T} \, \Sigma \, (V^\mathsf{T})^\mathsf{T}
+    = V^\mathsf{T} \Sigma V
+\]
+
+Poiché \( \Sigma = V \Lambda V^\mathsf{T} \), allora:
+\[
+\mathrm{Cov}(Y) = V^\mathsf{T} (V \Lambda V^\mathsf{T}) V = (V^\mathsf{T} V) \Lambda (V^\mathsf{T} V) = I \Lambda I = \Lambda
+\]
+
+Quindi \( \mathrm{Cov}(Y) \) è diagonale e coincide con la matrice degli autovalori di \( \Sigma \), cioè le varianze delle componenti principali.
+\end{dimostrazione}
+
+\subsection{Scelte pratiche nella PCA: standardizzazione o no?}
+
+\paragraph{Due approcci standard alla PCA.}
+Ci sono due modalità comuni per eseguire la PCA:
+
+\begin{enumerate}
+  \item Centrare i dati rispetto alla media, poi eseguire la PCA sulla matrice di covarianza \( \Sigma = \mathrm{Cov}(X) \) e infine standardizzare.
+  \item Centrare i dati rispetto alla media, standardizzare ogni variabile (cioè trasformarla in una variabile con media 0 e varianza 1), poi fare la PCA sulla matrice di correlazione ed eventualmente standardizzare di nuovo subito dopo.
+\end{enumerate}
+
+Questi due approcci corrispondono a:
+
+\begin{itemize}
+  \item PCA su \( \Sigma \): privilegia le direzioni di massima varianza assoluta;
+  \item PCA su matrice di correlazione: privilegia le direzioni di massima varianza relativa, indipendente dall'unità di misura.
+\end{itemize}
+
+\begin{nota}{Approccio standardizzato}{pca-standard}
+Applicare la PCA dopo aver standardizzato equivale a diagonalizzare la matrice di correlazione \( \rho(X) \), ovvero \( \mathrm{Cov}(Z) \) dove \( Z \) è la versione standardizzata di \( X \).
+\end{nota}
+
+\paragraph{Unità di misura e varianza.}
+La matrice di covarianza \( \Sigma = \mathrm{Cov}(X) \) è influenzata dall’unità di misura delle variabili: se una variabile ha un’unità molto più grande, avrà anche una varianza più grande, e quindi tenderà a dominare le componenti principali.
+
+\begin{nota}{Influenza delle unità di misura}{pca-unita}
+Se le variabili hanno unità di misura molto diverse (es. altezza in cm, peso in kg), conviene standardizzare prima della PCA. Altrimenti la componente principale potrebbe riflettere solo la scala di una variabile.
+\end{nota}
+
+\paragraph{Rappresentazione grafica dei due approcci.}
+
+Nella seconda riga viene applicata la standardizzazione prima della PCA: il risultato finale (dopo PCA) è visivamente diverso. In entrambi i casi si ottiene una matrice di covarianza diagonale, ma le componenti principali sono diverse.
+
+\begin{nota}{Quando usare la standardizzazione}{pca-standard-when}
+Se non si ha una chiara ragione per dare peso a una variabile più che ad un'altra (es. tutte hanno importanza comparabile), allora è consigliabile usare l'approccio con standardizzazione.
+\end{nota}
+
+
+
+\section{Analisi Fattoriale (Factor Analysis)}\label{sec:factor-analysis}
+
+L'Analisi Fattoriale è una tecnica statistica utilizzata per ridurre il numero di variabili osservate in un numero inferiore di variabili latenti chiamate \textbf{fattori}. Mentre la PCA riduce la dimensionalità conservando la varianza, la Factor Analysis cerca di spiegare le correlazioni tra le variabili attraverso fattori latenti, e può essere vista come un'estensione della PCA.
+
+\begin{definizione}{Fattori e variabili osservate}{factor-analysis}
+Nel modello di Analisi Fattoriale, le variabili osservate \( X_1, X_2, \dots, X_m \) sono espresse come una combinazione lineare di fattori latenti \( F_1, F_2, \dots, F_k \) più un errore \( \epsilon_1, \epsilon_2, \dots, \epsilon_m \):
+\[
+X_i = \lambda_{i1} F_1 + \lambda_{i2} F_2 + \dots + \lambda_{ik} F_k + \epsilon_i
+\]
+dove \( \lambda_{ij} \) è il \textbf{factor loading} che esprime la relazione tra la variabile osservata \( X_i \) e il fattore \( F_j \).
+\end{definizione}
+
+\subsection{Factor Loadings}
+
+I \textbf{factor loadings} \( \lambda_{ij} \) rappresentano il peso di ciascun fattore latente \( F_j \) sulla variabile osservata \( X_i \). Questi valori mostrano quanto ciascun fattore contribuisce alla varianza della variabile osservata. Un alto factor loading indica che la variabile è fortemente correlata con il fattore.
+
+\begin{esempio}{Factor loadings}{factor-loadings}
+Nel caso di due fattori latenti \( F_1 \) e \( F_2 \), i fattori di carico potrebbero essere:
+\[
+F_1 = 1.1 X_1 + 0.8 X_2, \quad F_2 = 1.1 X_1 + 0.8 X_2
+\]
+Ciò significa che \( X_1 \) e \( X_2 \) sono fortemente influenzati da entrambi i fattori, con pesi \( \lambda_{11} = 1.1 \), \( \lambda_{12} = 0.8 \), e così via.
+\end{esempio}
+
+\subsection{Obiettivo dell'analisi fattoriale}
+
+L'obiettivo dell'Analisi Fattoriale è quello di ridurre il numero di variabili osservate \( X_1, X_2, \dots, X_m \) in \( k \) fattori \( F_1, F_2, \dots, F_k \), dove \( k < m \), cercando di mantenere la maggior parte della varianza. L'analisi si concentra nel trovare i fattori latenti che meglio spiegano le correlazioni tra le variabili.
+
+\begin{nota}{Riduzione dimensionale nella Factor Analysis}{factor-reduction}
+La riduzione di dimensione in Factor Analysis non è come nella PCA, dove si cerca di massimizzare la varianza, ma si cerca di spiegare le correlazioni tra le variabili attraverso un numero ridotto di fattori.
+\end{nota}
+
+\subsection{Quando usare l'Analisi Fattoriale?}
+
+L'Analisi Fattoriale è utile quando:
+\begin{itemize}
+  \item Le variabili originali sono fortemente correlate tra loro;
+  \item Si vuole ridurre la dimensionalità dei dati senza perdere troppe informazioni;
+  \item Le variabili sono influenzate da un numero ridotto di fattori latenti.
+\end{itemize}
+
+\begin{nota}{Fattori "schiacciati"}{factor-schiacciati}
+Quando il numero di variabili osservate \( m \) è grande e ci sono molte componenti di \( Y \) con varianza piccola, l'Analisi Fattoriale è spesso più adatta rispetto alla PCA, che potrebbe perdere troppe informazioni in presenza di molte variabili "schiacciate" (ovvero con bassa varianza).
+\end{nota}
+
+\subsection{Relazione con la PCA}
+
+L'Analisi Fattoriale può essere vista come una generalizzazione della PCA. Mentre la PCA si concentra nel massimizzare la varianza, la Factor Analysis cerca di spiegare la varianza condivisa tra le variabili attraverso fattori latenti. Quindi, la PCA può essere considerata come un caso particolare di Factor Analysis, dove tutti i fattori sono assunti ortogonali e indipendenti.
+
+\subsection{Riduzione dimensionale e scelta del numero di componenti}
+
+Quando \( m \) (il numero di variabili) è grande, esistono molte componenti principali con varianza piccola. La PCA cerca di ridurre la dimensione del vettore \( X \) mantenendo la varianza totale e riducendo la complessità del modello. La somma delle varianze prima e dopo la trasformazione è costante e conserva la varianza totale:
+\[
+\text{Var}(X_1) + \dots + \text{Var}(X_m) = \text{Var}(Y_1) + \dots + \text{Var}(Y_m) = \text{varianza totale}
+\]
+Questa relazione implica che la traccia della matrice di covarianza \( \Sigma \) è uguale alla somma degli autovalori di \( \Sigma \), ovvero:
+\[
+\text{tr}(\Sigma) = \text{tr}(\Lambda)
+\]
+dove \( \Lambda \) è la matrice diagonale degli autovalori.
+
+\subsubsection{Distribuzione degli autovalori}
+
+Tipicamente, gli autovalori \( \lambda_1 \geq \lambda_2 \geq \dots \geq \lambda_m > 0 \) sono ordinati in modo decrescente. Questo ordine riflette la quantità di varianza spiegata da ciascuna componente principale. I componenti principali con autovalori maggiori spiegano una porzione maggiore della varianza totale.
+
+Un approccio comune è quello di utilizzare un grafico dei cosiddetti \textbf{cambiamenti di pendenza} (come lo scree plot) per determinare il numero di componenti principali da mantenere. Un cambiamento significativo nella pendenza suggerisce il numero ottimale di componenti da considerare:
+Nel grafico sopra, le prime 3 componenti sembrano spiegare la maggior parte della varianza.
+
+\subsection{Quando standardizzare i dati}
+
+Quando i dati hanno unità di misura diverse, è importante standardizzarli prima di applicare la PCA. Questo è cruciale, poiché le variabili con unità più grandi tenderanno a dominare la varianza, influenzando fortemente le componenti principali.
+
+Se dopo la PCA i dati non vengono standardizzati, si ottiene una rotazione dei dati senza alcuna scalatura. In questo caso, la PCA non fornirà una riduzione della dimensione che tiene conto della varianza relativa di ciascuna variabile, ma solo una rotazione rispetto alla distribuzione dei dati. Di conseguenza, la distanza tra i punti sarà influenzata solo dalla loro distribuzione e non dalla varianza delle variabili.
+
+\begin{nota}{Standardizzazione dopo PCA}{pca-standardizzazione}
+Standardizzare i dati prima della PCA è fondamentale per ridurre il rischio di amplificare il rumore nelle componenti con bassa varianza. La standardizzazione aiuta a bilanciare l'influenza di variabili con scale diverse.
+\end{nota}
+
+\subsection{Effetto della standardizzazione}
+
+Quando i dati vengono standardizzati dopo la PCA, la varianza di ciascuna componente principale è distribuita in modo più uniforme, evitando che variabili con bassa varianza distorcano i risultati. Il grafico sottostante mostra l'effetto della standardizzazione:
+
+Nel grafico:
+- \( \mu \) e \( \Sigma \) indicano i dati originali con la loro media e covarianza,
+- \( 0, \Sigma \) indica i dati centrati ma non standardizzati,
+- \( 0, I \) rappresenta i dati dopo standardizzazione.
+
+\begin{nota}{Importanza della standardizzazione}{pca-scaling}
+La standardizzazione dopo la PCA è essenziale quando le variabili hanno scale diverse, poiché permette una comparazione equa tra le variabili e riduce l'influenza di quelle con una varianza maggiore.
+\end{nota}
