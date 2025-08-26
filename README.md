@@ -2,9 +2,22 @@
 
 ML - Machine Learning presso l'Università degli Studi di Parma (6 CFU).
 
+# Development Environment with Conda
+```bash
+conda create --name machine-learning python=3.11
+```
+```bash
+conda activate machine-learning
+```
+```bash
+pip install -r requirements.txt
+```
+
+Then, you can change the Jupyter kernel setting the Conda environment as the new one.
+
 # Development Environment with Jupyter Notebook on Docker
 
-This project sets up a development environment using [Jupyter Notebook](https://jupyter.org) on Docker. The container is based on `jupyter/minimal-notebook` image, and, has some useful packages (check `REQUIREMENTS`), allowing you to develop quantum programs locally and execute them inside the container.
+This project sets up a development environment using [Jupyter Notebook](https://jupyter.org) on Docker. The container is based on `jupyter/minimal-notebook` image, and, has some useful packages (check `requirements-docker.txt`), allowing you to develop quantum programs locally and execute them inside the container.
 
 ## Prerequisites
 
