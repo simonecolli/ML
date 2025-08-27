@@ -1,4 +1,4 @@
 FROM jupyter/minimal-notebook
 
-COPY ./REQUIREMENTS /tmp/REQUIREMENTS
-RUN pip install -r /tmp/REQUIREMENTS
+COPY ./requirements-docker.txt /tmp/requirements-docker.txt
+RUN pip install -r /tmp/requirements-docker.txt
