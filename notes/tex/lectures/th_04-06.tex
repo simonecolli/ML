@@ -1,0 +1,124 @@
+\section{Simulazione Monte Carlo}\label{sec:monte_carlo}
+
+\subsection{Il Problema: Valori Attesi e Probabilità Complesse}
+Spesso in statistica e machine learning ci si imbatte in variabili aleatorie la
+cui complessità rende difficile o impossibile calcolare analiticamente il loro
+valore atteso o la probabilità di un evento.
+
+\begin{esempio}{Tempo di superamento di una soglia}{soglia_unif}
+Consideriamo una successione di variabili aleatorie \(U_1, U_2, \dots\)
+indipendenti e identicamente distribuite come \(\text{Unif}(0,1)\). Definiamo le
+somme parziali \(S_n = \sum_{i=1}^n U_i\).
+Vogliamo studiare la variabile \(T\), che rappresenta il "tempo" (numero di
+passi) necessario per superare una soglia \(a>0\):
+\[
+T := \inf\{n : S_n \ge a\}
+\]
+La distribuzione di \(T\) è complicata e dipende da \(a\). Come possiamo
+stimare quantità come il suo valore atteso \(E(T)\) o la probabilità \(P(T \le
+c)\)?
+\end{esempio}
+
+Altri esempi includono il calcolo dell'entropia di una distribuzione, la stima
+del valore atteso di trasformazioni non lineari di variabili (es.
+\(E(\sqrt{Z})\) con \(Z \sim \mathcal{N}\)), o il calcolo delle probabilità
+degli esiti di un processo complesso come una battaglia nel gioco "Risiko". In
+tutti questi casi, una soluzione analitica è impraticabile e si ricorre a
+metodi numerici o stocastici.
+
+\subsection{Soluzione Stocastica: Il Metodo Monte Carlo}
+
+\begin{definizione}{Metodo Monte Carlo}{monte_carlo}
+Il metodo Monte Carlo è una tecnica computazionale che permette di ottenere
+risultati numerici approssimati utilizzando campionamenti casuali. Per stimare
+il valore atteso \(E(X)\) di una v.a. \(X\):
+\begin{enumerate}
+    \item Si generano \(N\) campioni indipendenti \(X_1, X_2, \dots, X_N\) dalla
+    distribuzione di \(X\).
+    \item Si stima \(E(X)\) con la media campionaria \(\bar{X}\).
+\end{enumerate}
+\[
+E(X) \approx \bar{X} = \frac{1}{N} \sum_{i=1}^N X_i
+\]
+Per la Legge dei Grandi Numeri (LGN), questa stima converge al valore vero per
+\(N \to \infty\).
+\end{definizione}
+
+
+\subsection{Intervalli di Confidenza per le Stime}
+Una stima puntuale (\(\bar{X}\)) non basta; un intervallo di confidenza ci dà
+una misura dell'incertezza della nostra stima.
+
+\begin{proposizione}{Intervallo di Confidenza per la Media}{ic_media}
+Un intervallo di confidenza per \(E(X)\) a un livello \(1-\alpha\) è dato da:
+\[
+E(X) \in \bar{X} \pm q \frac{S_X}{\sqrt{N}}
+\]
+dove \(\bar{X}\) è la media campionaria, \(S_X\) è la deviazione standard
+campionaria, \(N\) è la dimensione del campione, e \(q\) è il quantile
+appropriato (es. \(q \approx 1.96\) per un livello di confidenza del 95\%). Se
+l'intervallo risulta troppo ampio, si può ridurre la sua ampiezza aumentando
+\(N\).
+\end{proposizione}
+
+
+\subsection{Stima di Probabilità}
+Il metodo Monte Carlo può essere usato anche per stimare una probabilità
+\(P(A)\). La tecnica consiste nel ricondurre il calcolo della probabilità a
+quello di un valore atteso.
+
+\begin{nota}{Probabilità come Valore Atteso}{prob_come_media}
+Si definisce una variabile aleatoria indicatore (o di Bernoulli)
+\(\mathbb{I}_A\) tale che:
+\[
+\mathbb{I}_A = \begin{cases} 1 & \text{se l'evento A si verifica} \\ 0 &
+\text{altrimenti} \end{cases}
+\]
+Il suo valore atteso è esattamente la probabilità di A: \(E(\mathbb{I}_A) =
+P(A)\).
+\end{nota}
+
+Per stimare \(P(A)\), si eseguono \(N\) simulazioni e si calcola la frequenza
+relativa \(f_c\) con cui A si è verificato. Questa frequenza è la media
+campionaria delle v.a. indicatore ed è la nostra stima della probabilità.
+\[
+P(A) \approx \hat{p} = f_c = \frac{\#\{ \text{volte in cui A si è verificato}
+\}}{N}
+\]
+L'intervallo di confidenza per la probabilità \(p\) diventa quindi:
+\[
+p \in \hat{p} \pm q \sqrt{\frac{\hat{p}(1-\hat{p})}{N}}
+\]
+\subsection{Soluzione Numerica (Alternativa alla Simulazione)}
+\begin{nota}{Metodi Numerici vs. Monte Carlo}{numeric_vs_mc}
+Per i problemi visti in precedenza, esistono approcci numerici deterministici
+che si contrappongono alla soluzione stocastica Monte Carlo. La loro
+fattibilità, tuttavia, dipende strettamente dalla natura del problema.
+
+\begin{itemize}
+    \item \textbf{Integrale Numerico:} Per calcolare un valore atteso definito
+    da un integrale, come nel caso di \(E(\sqrt{Z})\) per \(Z \sim
+    \mathcal{N}(\mu, \sigma^2)\), si può ricorrere alla quadratura numerica.
+    Questa tecnica approssima l'area sottesa alla curva della funzione
+    integranda sommando le aree di un gran numero di rettangoli o altri poligoni
+    semplici.
+
+    \item \textbf{Approssimazione di Somme Infinite:} Per calcolare quantità
+    come l'entropia, che richiedono una somma su infiniti termini, si adotta un
+    approccio di troncamento. La somma viene calcolata solo fino a un certo
+    punto, fermandosi quando i termini successivi diventano così piccoli da non
+    contribuire in modo significativo al risultato finale.
+
+    \item \textbf{Esaustione dei Casi:} Per problemi con uno spazio degli esiti
+    finito e discreto, come la battaglia nel gioco "Risiko", è teoricamente
+    possibile calcolare le probabilità esatte enumerando tutti i casi
+    possibili. Nel caso di 3 dadi contro 3, questo comporterebbe l'analisi di
+    \(6^6 = 46556\) combinazioni.
+
+    \item \textbf{Casi Inattuabili:} Problemi ad alta dimensionalità, come il
+    calcolo del "tempo di superamento di una soglia" (esempio
+    \Cref{ex:soglia_unif}), sono spesso impossibili da risolvere con questi
+    metodi deterministici. In questi scenari, la simulazione Monte Carlo rimane
+    l'approccio più efficace e, a volte, l'unico praticabile.
+\end{itemize}
+\end{nota}

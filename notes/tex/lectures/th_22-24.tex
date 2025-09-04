@@ -1,0 +1,734 @@
+\section{Selezione delle Variabili}
+
+Nei modelli di regressione multipla, spesso ci si trova a dover decidere quali
+predittori includere nel modello finale. L'obiettivo è duplice: da un lato si
+desidera un modello che spieghi al meglio la variabilità della risposta,
+dall'altro si cerca un modello \textbf{parsimonioso}, ovvero semplice,
+interpretabile e che eviti l'overfitting. Le procedure di selezione delle
+variabili, come i metodi \textit{stepwise}, sono algoritmi che automatizzano
+questo processo.
+
+I metodi stepwise più comuni sono:
+\begin{itemize}
+    \item \textbf{Selezione Backward}: Si parte dal modello completo con tutte
+    le \(p\) variabili e si eliminano una alla volta.
+    \item \textbf{Selezione Forward}: Si parte da un modello senza variabili e
+    se ne aggiungono una alla volta.
+    \item \textbf{Selezione Mista (Stepwise)}: Unisce le due logiche,
+    permettendo sia di aggiungere che di eliminare variabili ad ogni passo.
+\end{itemize}
+
+\subsection{Selezione Backward}
+
+La selezione backward è una delle tecniche più diffuse. L'algoritmo parte dal
+modello più complesso e lo semplifica progressivamente.
+
+\paragraph{Procedura}
+\begin{enumerate}
+    \item \textbf{Inizio}: Si stima il modello completo, includendo tutti i
+    \(p\) predittori disponibili.
+    \item \textbf{Verifica}: Si calcolano i p-value per i test t su ogni singolo
+    coefficiente \(\beta_j\) (con \(H_0: \beta_j=0\)).
+    \item \textbf{Decisione}:
+    \begin{itemize}
+        \item Se tutti i p-value sono inferiori a una soglia di significatività
+        predefinita (\(\alpha_{out}\)), la procedura si arresta. Il modello
+        corrente è il modello finale.
+        \item Altrimenti, si individua il predittore con il \textbf{p-value più
+        alto} e lo si rimuove dal modello.
+    \end{itemize}
+    \item \textbf{Iterazione}: Si torna al punto 1, stimando un nuovo modello
+    con i predittori rimanenti, e si ripete il ciclo.
+\end{enumerate}
+
+\begin{nota}{Sulla scelta della soglia}{backward-threshold}
+In pratica, la soglia suggerita per la rimozione (\(\alpha_{out}\)) è spesso
+alta, tipicamente intorno al \textbf{30\%} (\(0.30\)). Questo perché si vuole
+essere conservativi e non eliminare variabili potenzialmente utili. Una regola
+pratica per interpretare i p-value (\(\alpha_j^*\)) in questo contesto è:
+\begin{itemize}
+    \item Se \(\alpha_j^* < 0.1\%\): si è ragionevolmente sicuri che \(\beta_j
+    \neq 0\) e la variabile non va tolta.
+    \item Se \(0.1\% \leq \alpha_j^* < 30\%\): la situazione è incerta e, di
+    solito, si tende a mantenere la variabile.
+    \item Se \(\alpha_j^* \geq 30\%\): non vi è alcuna evidenza che \(\beta_j
+    \neq 0\) e si può considerare di togliere la variabile.
+\end{itemize}
+\end{nota}
+
+\begin{nota}{Sulla variabile con p-value massimo}{max_p-value}
+È importante notare che la scelta di rimuovere la variabile con il p-value
+massimo è una convenzione, ma non è detto che sia la meno utile. Quando
+\(H_0\) è vera, il p-value si distribuisce come un'Uniforme(0,1) e non
+privilegia valori vicini a 1. È utile testare i modelli togliendo una alla
+volta le variabili con p-value massimali e controllare quale tra questi è il
+migliore.
+\end{nota}
+
+\paragraph{Criticità: la Multicollinearità}
+La selezione backward risente pesantemente della presenza di
+\textbf{multicollinearità}, ovvero una forte correlazione tra le variabili di
+ingresso.
+
+Se sono presenti forti correlazioni, si verificano diverse problematiche:
+\begin{itemize}
+    \item La matrice \(X^T X\) diventa instabile o, nel caso di correlazione
+    perfetta, non invertibile.
+    \item La varianza degli stimatori dei coefficienti (\(\hat{\beta}_j\))
+    diventa molto elevata. Matematicamente, gli elementi sulla diagonale della
+    matrice \([(X^T X)^{-1}]_{jj}\) diventano grandi.
+    \item Di conseguenza, le statistiche test \(T_j\) per i singoli coefficienti
+    saranno piccole.
+    \item I \textbf{p-value (\(\alpha_j^*\)) risulteranno artificialmente alti},
+    anche per variabili che potrebbero essere importanti.
+\end{itemize}
+Questo inganna l'algoritmo backward, che potrebbe eliminare predittori utili
+semplicemente perché la loro informazione è ridondante a causa della
+correlazione con altre variabili. I p-value rimarranno alti finché la
+multicollinearità non viene ridotta togliendo una delle variabili correlate.
+
+\begin{esempio}{Effetto della multicollinearità}{multicollinearity-example}
+Supponiamo di voler prevedere una misura \(Y\) usando quattro predittori molto
+correlati tra loro, come il numero di dipendenti (\(x_2\)), il numero di
+impiegati (\(x_3\)), i posti a sedere (\(x_4\)) e un indice di fotoritocco
+(\(x_1\)). Le correlazioni sono \(x_1 \approx 22x_2\), \(x_3 \approx 20x_2\),
+\(x_4 \approx 5x_2\).
+Un modello di regressione potrebbe produrre coefficienti instabili e difficili
+da interpretare. Ad esempio, una stima potrebbe essere:
+\[ Y = 3 + 0.1x_1 + 1.1x_2 + 0.1x_3 + \dots \]
+A causa della forte correlazione, i contributi delle singole variabili si
+confondono. L'effetto di \(x_2\) viene "spalmato" anche sugli altri
+coefficienti, rendendoli imprecisi e potenzialmente non significativi
+singolarmente, anche se collettivamente importanti.
+\end{esempio}
+
+\begin{nota}{Robustezza del modello}{robustness-note}
+All'inizio della procedura backward, il numero di variabili è massimo (\(p\)).
+Se il rapporto tra il numero di osservazioni e il numero di predittori, \(n/p\),
+è piccolo, la stima della regressione è meno robusta e più soggetta a
+instabilità.
+\end{nota}
+
+\subsection{Selezione Forward}
+
+La selezione Forward è un approccio \textit{bottom-up}, opposto a quello
+Backward. Invece di semplificare un modello complesso, ne costruisce uno
+partendo da zero.
+
+\paragraph{Procedura}
+\begin{enumerate}
+    \item \textbf{Inizio}: Si parte dal modello nullo, contenente solo
+    l'intercetta.
+    \item \textbf{Aggiunta}: Si provano ad aggiungere, una alla volta, tutte le
+    variabili non ancora incluse nel modello. Si stima una regressione per
+    ciascuna di queste "prove".
+    \item \textbf{Decisione}: Si sceglie la variabile che, una volta aggiunta,
+    migliora maggiormente il modello. Questa scelta viene guidata da indicatori
+    globali:
+    \begin{itemize}
+        \item La variabile che produce il modello con l'Errore Standard della
+        Regressione (\(S_e\)) più basso.
+        \item In modo equivalente, quella che produce
+        l'\(R^2_{\text{corretto}}\) più alto.
+        \item Al primo passo, ciò equivale a scegliere la variabile con il
+        p-value (\(\alpha_j^*\)) più basso.
+    \end{itemize}
+    \item \textbf{Iterazione}: La variabile scelta viene aggiunta
+    definitivamente al modello. Il ciclo riparte dal punto 2, provando ad
+    aggiungere le restanti variabili al nuovo modello, finché non si raggiunge
+    una condizione di arresto.
+\end{enumerate}
+
+La procedura si ferma quando l'aggiunta di una qualsiasi delle variabili
+rimanenti non porta a un miglioramento significativo del modello (ad esempio,
+quando l'\(S_e\) del modello smette di diminuire e inizia ad aumentare).
+
+\begin{nota}{Implementazione nei Software}{software-f-value}
+È comune che i software statistici che automatizzano le procedure stepwise
+chiedano di fissare una soglia per il valore della statistica F invece che per
+il p-value.
+\begin{itemize}
+    \item \textbf{"F to enter"}: soglia per la selezione Forward.
+    \item \textbf{"F to remove"}: soglia per la selezione Backward.
+\end{itemize}
+Entrambe le soglie vengono usate nella selezione mista. I valori di default di
+solito corrispondono a un livello di significatività \(\alpha^*\) intorno al
+30\%.
+\end{nota}
+
+È importante notare che i percorsi della selezione Forward e Backward non sono
+necessariamente simmetrici e possono portare a modelli finali differenti.
+
+\subsection{Metodi Globali (Best Subset Selection)}
+
+A differenza dei metodi stepwise, che esplorano solo un percorso limitato tra i
+possibili modelli, i metodi globali adottano un approccio esaustivo.
+
+\begin{definizione}{Best Subset Selection}{best-subset-def}
+La selezione "Best Subset" prevede di testare \textbf{tutti i possibili
+sottoinsiemi} di variabili. Per \(p\) predittori, questo significa stimare e
+valutare \(2^p\) modelli di regressione. A causa della crescita esponenziale del
+numero di modelli, questo approccio è fattibile solo per un numero di
+predittori non troppo grande (es. \(p < 20\)).
+\end{definizione}
+
+Per confrontare un numero così elevato di modelli, è necessario utilizzare
+delle metriche di performance, o "punteggi" (score).
+
+\paragraph{Criteri di Valutazione (Score)}
+I criteri più utilizzati per confrontare i modelli e selezionare il "migliore"
+sono:
+\begin{itemize}
+    \item \textbf{\(S_e\)} (Errore Standard della Regressione): si cerca il
+    modello con l'\(S_e\) minimo.
+    \item \textbf{\(R^2_{\text{corretto}}\)} (R-quadro corretto): si cerca il
+    modello con l'\(R^2_{\text{corretto}}\) massimo (scelta equivalente a
+    minimizzare \(S_e\)).
+    \item \textbf{AIC} (Akaike Information Criterion): un criterio che bilancia
+    la bontà di adattamento del modello con la sua complessità. La formula è
+    \( AIC = 2k - 2\ln(L) \), dove \(k\) è il numero di parametri e \(L\) è la
+    verosimiglianza (Likelihood). Si cerca il modello con l'AIC minimo.
+    \item \textbf{Validazione}: Si valutano le performance del modello (es.
+    \(S_e\), SSR) su un set di dati di validazione, non usato per la stima.
+\end{itemize}
+
+\begin{nota}{Il Pericolo di Scegliere il "Migliore"}{best-model-warning}
+Bisogna essere molto cauti nell'interpretare il modello con lo score in assoluto
+migliore. I valori degli score (come \(S_e\)) calcolati sul campione sono
+\textbf{stime campionarie}, e quindi sono essi stessi delle variabili casuali.
+Selezionare il modello che ha, ad esempio, l'\(S_e\) minimo tra \(2^p\) modelli
+significa scegliere il minimo tra \(2^p\) valori casuali. È molto probabile che
+il modello "migliore" lo sia semplicemente per effetto del caso, e che le sue
+performance non siano altrettanto buone su nuovi dati. Non è opportuno cercare
+il minimo di una funzione usando una sua stima casuale.
+\end{nota}
+
+Nonostante le differenze negli approcci, molto spesso i metodi Forward, Backward
+e Best Subset portano alla selezione di modelli molto simili o identici.
+
+\subsection{Criteri Basati sui Coefficienti di Determinazione}
+Per confrontare l'efficacia di diversi modelli di regressione, specialmente
+durante il processo di selezione delle variabili, si usano spesso degli indici
+globali. I più noti sono il coefficiente di determinazione \(R^2\) e la sua
+versione corretta.
+
+\paragraph{Coefficiente di Determinazione (\(R^2_D\))}
+Il coefficiente di determinazione, noto come \(R^2\), misura la proporzione
+della variabilità totale della variabile dipendente \(Y\) che viene spiegata
+dal modello di regressione.
+
+\begin{definizione}{Coefficiente di Determinazione \(R^2_D\)}{r-squared-def}
+È definito come:
+\[
+    R_D^2 = 1 - \frac{SSR}{SSY}
+\]
+dove:
+\begin{itemize}
+    \item \textbf{SSY} (Total Sum of Squares): è la \textbf{devianza totale} di
+    \(Y\), calcolata come \( \sum_{i=1}^{n} (Y_i - \bar{Y})^2 \). Rappresenta la
+    variabilità della variabile risposta prima di considerare i predittori.
+    \item \textbf{SSR} (Sum of Squared Residuals): è la \textbf{devianza
+    residua}, \( \sum_{i=1}^{n} (Y_i - \hat{Y}_i)^2 \), ovvero la parte di
+    variabilità di \(Y\) che il modello \textit{non} è riuscito a spiegare.
+\end{itemize}
+Il rapporto \( \frac{SSR}{SSY} \) è la frazione della devianza di \(Y\) che
+rimane non spiegata nonostante l'uso dei predittori \(X\). Di conseguenza,
+\(R_D^2\) è la frazione di devianza che \textit{viene} spiegata dal modello.
+\end{definizione}
+
+Per un dato set di dati, la devianza totale \textbf{SSY è una quantità fissa}:
+dipende solo dalla variabile \(Y\). Pertanto, per aumentare \(R_D^2\) e
+migliorare il modello, l'unico modo è diminuire la devianza residua
+\textbf{SSR}, ovvero migliorare la regressione trovando stime dei coefficienti
+che minimizzino l'errore.
+
+Tuttavia, l'\(R_D^2\) ha un grosso limite: \textbf{aumenta sempre (o al più
+rimane uguale) all'aumentare del numero di predittori \(p\)} nel modello. Questo
+perché aggiungendo una variabile, la minimizzazione di SSR sul nuovo set di
+predittori troverà una soluzione con un errore uguale o inferiore a prima. Di
+conseguenza, massimizzare l'\(R_D^2\) porterebbe sempre a scegliere il modello
+con tutte le variabili, rendendolo un criterio \textbf{inadatto per la
+selezione} di un modello parsimonioso.
+
+\paragraph{Coefficiente di Determinazione Corretto (\(R^2_A\))}
+Per superare il limite di \(R_D^2\), è stato introdotto il coefficiente di
+determinazione corretto (\textit{adjusted R-squared}), che penalizza l'aggiunta
+di variabili inutili.
+
+\begin{definizione}{Coefficiente di Determinazione Corretto
+\(R^2_A\)}{adj-r-squared-def}
+È definito utilizzando le varianze campionarie (le somme dei quadrati divise
+per i rispettivi gradi di libertà):
+\[
+    R_A^2 = 1 - \frac{S_e^2}{S_Y^2}
+\]
+dove \(S_e^2 = \frac{SSR}{n-p-1}\) è la stima della varianza degli errori (MSE)
+e \(S_Y^2 = \frac{SSY}{n-1}\) è la varianza campionaria di Y.
+\end{definizione}
+
+L'\(R_A^2\) \textbf{non è monotono} rispetto al numero di variabili \(p\).
+Quando si aggiunge un nuovo predittore al modello:
+\begin{itemize}
+    \item Il numeratore di \(S_e^2\), cioè SSR, diminuisce (o rimane uguale).
+    \item Il denominatore di \(S_e^2\), cioè \(n-p-1\), diminuisce anch'esso,
+    perché \(p\) aumenta di 1.
+\end{itemize}
+Il valore di \(S_e^2\) (e quindi di \(R_A^2\)) dipende dal bilanciamento di
+questi due effetti. Se la nuova variabile è utile, la riduzione di SSR sarà
+significativa e compenserà la perdita di un grado di libertà, facendo
+diminuire \(S_e^2\) (e aumentare \(R_A^2\)). Se la variabile è inutile, la
+riduzione di SSR sarà minima e non basterà a compensare la diminuzione del
+denominatore; di conseguenza \(S_e^2\) aumenterà e \(R_A^2\) diminuirà.
+Questa sua proprietà di "penalizzare" la complessità rende l'\(R_A^2\) un
+criterio valido per la selezione delle variabili, dove l'obiettivo è
+massimizzarlo.
+
+\begin{esercizio}{HW: Relazione tra \(R_A^2\) e
+\(R_D^2\)}{ex:r-squared-relation}
+Trovare la relazione \(R_A^2 = a + b R_D^2\) e mostrare che \(R_A^2 \le R_D^2\)
+e che \(R_A^2=1 \iff R_D^2=1\).
+\begin{dimostrazione}{}{}
+Partiamo dalla definizione di \(R_A^2\) e sostituiamo le formule di \(S_e^2\) e
+\(S_Y^2\):
+\[
+    R_A^2 = 1 - \frac{S_e^2}{S_Y^2} = 1 - \frac{SSR/(n-p-1)}{SSY/(n-1)} = 1 -
+    \frac{SSR}{SSY} \cdot \frac{n-1}{n-p-1}
+\]
+Sappiamo dalla definizione di \(R_D^2\) che \(\frac{SSR}{SSY} = 1 - R_D^2\).
+Sostituendo otteniamo:
+\[
+    R_A^2 = 1 - (1 - R_D^2) \frac{n-1}{n-p-1} = 1 - \frac{n-1}{n-p-1} + R_D^2
+    \frac{n-1}{n-p-1}
+\]
+Questa è la relazione cercata, con \(a = 1 - \frac{n-1}{n-p-1} =
+\frac{-p}{n-p-1}\) e \(b = \frac{n-1}{n-p-1}\).
+
+\textbf{1. Dimostrazione che \(R_A^2 \le R_D^2\):}
+Dobbiamo dimostrare che \(1 - \frac{SSR}{SSY} \cdot \frac{n-1}{n-p-1} \le 1 -
+\frac{SSR}{SSY}\).
+Questo equivale a \(-\frac{SSR}{SSY} \cdot \frac{n-1}{n-p-1} \le
+-\frac{SSR}{SSY}\), e quindi a \(\frac{n-1}{n-p-1} \ge 1\).
+Poiché \(n, p\) sono interi e \(p \ge 0\), si ha \(n-1 \ge n-p-1\). Essendo i
+gradi di libertà positivi, la disuguaglianza è vera.
+
+\textbf{2. Dimostrazione che \(R_A^2=1 \iff R_D^2=1\):}
+Se \(R_D^2=1\), allora \(SSR=0\). Di conseguenza, \(S_e^2=0\) e \(R_A^2 = 1 - 0
+= 1\).
+Viceversa, se \(R_A^2=1\), allora \(S_e^2=0\). Poiché \(S_e^2 = SSR/(n-p-1)\),
+questo implica \(SSR=0\). Di conseguenza, \(R_D^2 = 1 - 0 = 1\). L'equivalenza
+è dimostrata.
+\end{dimostrazione}
+\end{esercizio}
+
+\begin{esercizio}{HW: \(R^2\) e Correlazione Lineare}{ex:r-corr-relation}
+Verificare che nel caso della regressione lineare semplice (\(p=1\)), il
+coefficiente di determinazione \(R_D^2\) è uguale al quadrato del coefficiente
+di correlazione lineare di Pearson tra \(x\) e \(Y\).
+\begin{dimostrazione}{}{}
+Nella regressione semplice, \(R_D^2 = \frac{ESS}{SSY}\), dove \(ESS =
+\sum(\hat{Y}_i - \bar{Y})^2\) è la devianza spiegata.
+Il modello è \(\hat{Y}_i = \hat{\beta}_0 + \hat{\beta}_1 x_i\). Sostituendo
+\(\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1 \bar{x}\), otteniamo:
+\[
+    \hat{Y}_i - \bar{Y} = (\bar{Y} - \hat{\beta}_1 \bar{x} + \hat{\beta}_1 x_i)
+    - \bar{Y} = \hat{\beta}_1 (x_i - \bar{x})
+\]
+Quindi, la devianza spiegata è:
+\[
+    ESS = \sum (\hat{\beta}_1 (x_i - \bar{x}))^2 = \hat{\beta}_1^2 \sum (x_i -
+    \bar{x})^2 = \hat{\beta}_1^2 S_{xx}
+\]
+Sostituiamo la stima di \(\hat{\beta}_1 = \frac{S_{xy}}{S_{xx}}\):
+\[
+    ESS = \left(\frac{S_{xy}}{S_{xx}}\right)^2 S_{xx} = \frac{S_{xy}^2}{S_{xx}}
+\]
+Infine, calcoliamo \(R_D^2\):
+\[
+    R_D^2 = \frac{ESS}{SSY} = \frac{S_{xy}^2 / S_{xx}}{S_{yy}} =
+    \frac{S_{xy}^2}{S_{xx} S_{yy}}
+\]
+Questa espressione è esattamente il quadrato del coefficiente di correlazione
+lineare \(r_{x,y}\):
+\[
+    (r_{x,y})^2 = \left(\frac{S_{xy}}{\sqrt{S_{xx} S_{yy}}}\right)^2 =
+    \frac{S_{xy}^2}{S_{xx} S_{yy}}
+\]
+L'identità è quindi verificata.
+\end{dimostrazione}
+\end{esercizio}
+
+
+
+\section{Analisi della Varianza (ANOVA) per il Confronto tra Modelli}
+
+L'Analisi della Varianza (ANOVA) offre un metodo formale per confrontare modelli
+di regressione annidati, ovvero quando un modello può essere considerato un
+caso speciale di un altro.
+
+\begin{definizione}{Confronto tra modelli annidati}{anova-nested-def}
+Siano dati due insiemi di variabili candidati, \(C\) e \(\tilde{C}\), tali che
+\(C \subset \tilde{C}\). Indichiamo con \(d\) il numero di variabili in \(C\) e
+con \(\tilde{d}\) il numero di variabili in \(\tilde{C}\). Vogliamo testare se
+le variabili aggiuntive presenti in \(\tilde{C}\) (cioè in \(\tilde{C}
+\setminus C\)) portano un contributo significativo al modello.
+\end{definizione}
+
+Poiché il modello basato su \(\tilde{C}\) contiene più variabili, il suo
+adattamento ai dati sarà sempre migliore o uguale a quello del modello basato
+su \(C\). Questo si traduce in:
+\[ R_D^2(\tilde{C}) \ge R_D^2(C) \iff SSR(\tilde{C}) \le SSR(C) \text{} \]
+L'ANOVA ci permette di quantificare se la riduzione dell'errore (la differenza
+\(SSR(C) - SSR(\tilde{C})\)) è statisticamente significativa o solo dovuta al
+caso.
+
+\paragraph{La Statistica F per il Confronto}
+Si definisce la somma dei quadrati addizionale (\(SS_D\)) come la riduzione
+dell'errore ottenuta passando dal modello più piccolo al più grande:
+\[ SS_D := SSR(C) - SSR(\tilde{C}) \text{} \]
+Questa quantità è associata a \(\tilde{d}-d\) gradi di libertà. La statistica
+test per il confronto tra i due modelli è data dal seguente rapporto:
+\[ V := \frac{SS_D / (\tilde{d}-d)}{SSR(C) / (n-d-1)} \text{} \]
+
+\begin{teorema}{Distribuzione della statistica V (di Cochran)}{cochran-thm}
+Sotto l'ipotesi nulla \(H_0\) che le variabili aggiuntive in \(\tilde{C}\) non
+siano utili (ovvero \(H_0: \beta_j=0 \quad \forall j \in \tilde{C} \setminus
+C\)), la statistica V segue una legge F di Fisher:
+\[ V \sim F(\tilde{d}-d, n-d-1) \text{} \]
+\end{teorema}
+
+Sotto l'ipotesi alternativa, il valore di V è tipicamente grande, perciò il
+test è unilaterale destro. Il p-value si calcola come \(\alpha^* = 1 -
+F_{(\tilde{d}-d, n-d-1)}(V)\).
+
+\begin{esercizio}{HW: Test F Globale di Regressione}{ex:global-f-test}
+Cosa succede se si confronta il modello completo con tutte le \(p\) variabili
+contro il modello nullo (contenente solo l'intercetta)?
+\begin{dimostrazione}{}{}
+Questo è il test F globale, che verifica se complessivamente la regressione è
+significativa. In questo caso, il modello più piccolo è \(C=\emptyset\)
+(modello nullo) e quello più grande è \(\tilde{C}=\{x_1, \dots, x_p\}\)
+(modello completo).
+Abbiamo:
+\begin{itemize}
+    \item \(d = |C| = 0\)
+    \item \(\tilde{d} = |\tilde{C}| = p\)
+\end{itemize}
+Le somme dei quadrati dei residui sono:
+\begin{itemize}
+    \item \(SSR(C) = SSR(\emptyset)\), che corrisponde alla devianza totale di
+    Y, quindi \(SSR(C)=SSY\).
+    \item \(SSR(\tilde{C})\) è la devianza residua del modello completo, che
+    chiamiamo semplicemente \(SSR\).
+\end{itemize}
+La somma dei quadrati addizionale è \(SS_D = SSR(C) - SSR(\tilde{C}) = SSY -
+SSR\).
+I gradi di libertà per il numeratore sono \(\tilde{d}-d = p-0=p\).
+I gradi di libertà per il denominatore sono \(n-d-1 = n-0-1=n-1\).
+
+Sostituendo nella formula della statistica V:
+\[ V = \frac{SS_D/(\tilde{d}-d)}{SSR(C)/(n-d-1)} = \frac{(SSY-SSR)/p}{SSY/(n-1)}
+\]
+L'ipotesi nulla è \(H_0: \beta_1 = \beta_2 = \dots = \beta_p = 0\). Un p-value
+(\(\alpha^*\)) molto piccolo per questo test indica che almeno uno dei
+predittori è utile per spiegare la Y.
+\end{dimostrazione}
+\end{esercizio}
+
+\begin{nota}{Applicazione nei Metodi Stepwise}{f-test-stepwise}
+Questo test F è alla base delle decisioni nei metodi di selezione stepwise. Ad
+esempio, in una procedura Forward, ad ogni passo si valuta se l'aggiunta di una
+nuova variabile \(x_j\) (quindi \(\tilde{C} = C \cup \{x_j\}\)) porta a una
+riduzione significativa dell'errore. Questo test F è equivalente al test t sul
+coefficiente della variabile aggiunta.
+\end{nota}
+
+
+\section{Metodi di Regolarizzazione}
+
+La regolarizzazione è una tecnica utilizzata per evitare l'overfitting nei
+modelli di regressione. Spesso, un modello in overfitting è caratterizzato da
+coefficienti \(\beta_j\) molto grandi, che corrispondono a una funzione
+approssimante con derivate elevate e un andamento molto "nervoso". L'idea
+fondamentale della regolarizzazione è di modificare la funzione di costo per
+penalizzare i modelli che presentano coefficienti di grandi dimensioni.
+
+Mentre la regressione standard (Least Squares Estimation, LSE) si limita a
+minimizzare la somma dei quadrati dei residui (SSR):
+\[
+    \min_{\beta} \left( \text{SSR} \right) = \min_{\beta} \left( \sum_{i=1}^{n}
+    (Y_i - \sum_{j=0}^{p} \beta_j x_{ij})^2 \right)
+\]
+i modelli regolarizzati aggiungono a questa un termine di penalità.
+
+\subsection{Regressione Ridge}
+La regressione Ridge aggiunge una penalità proporzionale alla somma dei
+quadrati dei coefficienti (norma \(L_2\)).
+
+\begin{definizione}{Funzione di costo Ridge}{ridge-cost-def}
+La funzione di costo per la regressione Ridge è:
+\begin{equation*}
+    \min_{\beta} \left( \frac{1}{n}\sum_{i=1}^{n} (Y_i - \sum_{j=0}^{p} \beta_jx_{ij})^2 + \alpha \sum_{j=1}^{p} \beta_j^2 \right)
+\end{equation*}
+Il termine \(\alpha \sum \beta_j^2\) è la penalità. L'iperparametro \(\alpha \ge 0\)
+controlla l'intensità di questa regolarizzazione: più \(\alpha\) è
+grande, più i coefficienti sono "spinti" verso lo zero.
+\end{definizione}
+
+La regressione Ridge è efficace nel ridurre la varianza del modello, ma tende a
+"restringere" (\textit{shrinkage}) i coefficienti verso lo zero senza mai
+annullarli completamente.
+
+\subsection{Regressione Lasso}
+La regressione Lasso (Least Absolute Shrinkage and Selection Operator) utilizza
+una penalità basata sulla somma dei valori assoluti dei coefficienti (norma
+\(L_1\)).
+
+\begin{definizione}{Funzione di costo Lasso}{lasso-cost-def}
+La funzione di costo per la regressione Lasso è:
+\[
+    \min_{\beta} \left( \frac{1}{n}\sum_{i=1}^{n} (Y_i - \sum_{j=0}^{p} \beta_j
+    x_{ij})^2 + \lambda \sum_{j=1}^{p} |\beta_j| \right)
+\]
+Una formulazione equivalente consiste nel minimizzare l'SSR sotto il vincolo che
+la somma dei valori assoluti dei coefficienti sia inferiore a una certa soglia
+\(\alpha\):
+\[
+    \min_{\beta}(\text{SSR}) \quad \text{con il vincolo} \quad \sum_{j=1}^{p}
+    |\beta_j| \le \alpha
+\]
+\end{definizione}
+
+La caratteristica più importante del Lasso è che, a differenza della Ridge, è
+in grado di \textbf{impostare alcuni coefficienti esattamente a zero}. Questo
+significa che la regressione Lasso non solo regolarizza il modello, ma effettua
+anche una \textbf{selezione automatica delle variabili}.
+
+\begin{nota}{Regressione Elastic Net}{elastic-net-note}
+Esiste anche la regressione "Elastic Net", che combina entrambe le
+penalizzazioni, \(L_1\) e \(L_2\), nella sua funzione di costo. Questo approccio
+ibrido può essere particolarmente utile in presenza di alta collinearità tra i
+predittori.
+\end{nota}
+
+\subsection{Considerazioni Pratiche}
+
+\begin{itemize}
+    \item \textbf{Standardizzazione delle Variabili}: Per far sì che i termini
+    di penalità abbiano senso, è fondamentale che i coefficienti \(\beta_j\)
+    abbiano una scala confrontabile. Per questo motivo, è prassi comune
+    \textbf{standardizzare le variabili} predittrici (portandole ad avere media
+    0 e deviazione standard 1) prima di applicare la regolarizzazione.
+    \item \textbf{Scelta degli Iperparametri}: Gli iperparametri di
+    regolarizzazione (\(\alpha\) per la Ridge, \(\lambda\) per la Lasso) non
+    vengono stimati dal modello, ma devono essere scelti con cura. Solitamente
+    si utilizza un set di validazione (o la cross-validation) per testare
+    diverse configurazioni e scegliere quella che produce il modello migliore.
+    \item \textbf{Ottimizzazione}: A differenza della regressione lineare
+    standard che ha una soluzione analitica, i modelli regolarizzati vengono
+    generalmente risolti tramite un \textbf{ottimizzatore iterativo}.
+\end{itemize}
+
+\subsection{Nota Finale: il Fenomeno del Double Descent}
+
+Tradizionalmente, la teoria statistica suggerisce che la performance di un
+modello (misurata dall'errore su dati di test) segua una curva a U al crescere
+della sua complessità. L'errore diminuisce fino a un punto ottimale, per poi
+risalire a causa dell'overfitting. Tuttavia, in contesti di machine learning
+moderni, si è osservato un fenomeno più complesso e controintuitivo, noto come
+\textbf{Double Descent}.
+
+\begin{nota}{Il Double Descent}{double-descent-note}
+In contesti realistici, che utilizzano ottimizzatori iterativi e beneficiano di
+una forma di \textit{regolarizzazione implicita}, il comportamento dell'errore
+di test può mostrare una seconda discesa.
+
+Come mostrato nel grafico, una volta superata la \textbf{soglia di
+interpolazione} (dove il numero di parametri \(p\) eguaglia il numero di dati
+\(n\)), l'errore di test, dopo aver raggiunto un picco, inizia a diminuire di
+nuovo. Questo avviene nel regime \textbf{over-parameterizzato} (\(p > n\)),
+tipico di molti modelli attuali come le reti neurali profonde.
+
+Questo fenomeno suggerisce che, quando il rapporto \(n/p\) è minore di 1 e
+tende a 0 (ovvero il modello diventa estremamente più complesso dei dati),
+l'overfitting tende a diminuire, contrariamente a quanto previsto dalla teoria
+classica.
+\end{nota}
+
+
+\section{Estensione dei Modelli Lineari}
+Quando la relazione tra i predittori e la variabile di risposta non è puramente
+lineare, o quando l'effetto di un predittore dipende dal valore di un altro, è
+possibile estendere il framework della regressione lineare introducendo termini
+non lineari.
+
+\subsection{Regressione Polinomiale}
+Si ricorre alla regressione polinomiale quando il modello lineare non è
+soddisfacente. Un segnale tipico di questa necessità è osservare degli
+andamenti non lineari (es. a parabola) nei grafici dei residui rispetto a una
+delle variabili predittrici.
+
+\paragraph{Metodologia}
+L'idea è di aggiungere al modello dei nuovi predittori "fittizi"
+(\textit{dummy}) che sono semplicemente monomi di grado 2 o superiore delle
+variabili originali.
+Per esempio, partendo da una singola variabile \(x\), possiamo costruire:
+\begin{itemize}
+    \item \textbf{Modello lineare}: \(Y = \beta_0 + \beta_1 x + \epsilon\)
+    \item \textbf{Modello quadratico}: \(Y = \beta_0 + \beta_1 x + \beta_2 x^2 +
+    \epsilon\)
+    \item \textbf{Modello generale di grado} \(\mathbf{d}\): \(Y = \beta_0 +
+    \beta_1 x + \beta_2 x^2 + \dots + \beta_d x^d + \epsilon\)
+\end{itemize}
+
+\begin{nota}{Linearità nei Parametri}{linearity-in-beta-note}
+È fondamentale notare che, sebbene il modello sia non lineare \textit{nelle
+variabili}, è ancora un modello \textbf{lineare nei parametri \(\beta\)}.
+Stiamo semplicemente conducendo una regressione lineare multipla in cui i
+predittori sono \(x_1=x, x_2=x^2, \dots, x_d=x^d\). Pertanto, può essere
+stimato con il metodo dei minimi quadrati (LSE) esattamente come un modello
+lineare standard.
+\end{nota}
+
+\begin{esempio}{Correzione della Non-Linearità}{poly-correction-ex}
+Se il grafico dei residui \(R_i\) contro un predittore \(x_2\) mostra
+un'evidente forma a parabola, possiamo sospettare una relazione quadratica.
+Aggiungendo un nuovo predittore \(x_{\text{new}} := x_2^2\) al modello, la
+non-linearità viene spesso corretta. Se il termine aggiunto risulta
+statisticamente significativo, l'SSR del nuovo modello sarà inferiore,
+indicando un miglior adattamento ai dati.
+\end{esempio}
+
+\subsection{Termini di Interazione}
+Il modello lineare standard assume che l'effetto di ogni predittore sulla
+risposta sia indipendente dagli altri (modello additivo). I termini di
+interazione vengono introdotti per modellare situazioni in cui l'effetto di una
+variabile cambia in base al valore di un'altra.
+
+\begin{definizione}{Interazione}{interaction-def}
+Un termine di interazione è un nuovo predittore creato moltiplicando due o più
+variabili originali (es. \(x_1 x_2\)). Il modello che lo include è detto
+\textit{semilineare}.
+\[ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2 + \epsilon \]
+\end{definizione}
+
+L'inclusione del termine di interazione cambia radicalmente l'interpretazione
+del modello. Mentre nel modello additivo l'effetto di un aumento unitario di
+\(x_1\) su \(Y\) è sempre \(\beta_1\), nel modello con interazione questo
+effetto diventa \(\beta_1 + \beta_3 x_2\). In altre parole, \textbf{il modo in
+cui \(Y\) dipende da \(x_1\), dipende a sua volta dal valore di \(x_2\) (e
+viceversa)}. Geometricamente, il modello non rappresenta più un piano, ma una
+superficie curva.
+
+\subsection{Principi Guida e Selezione delle Variabili}
+
+Quando si lavora con termini polinomiali e di interazione, è cruciale seguire
+delle regole per costruire modelli coerenti e per guidare la selezione delle
+variabili.
+
+\begin{nota}{Regola Gerarchica}{hierarchical-rule}
+Il principio gerarchico stabilisce che, se un modello include un termine di
+ordine superiore, deve includere anche tutti i termini di ordine inferiore che
+lo compongono.
+\begin{itemize}
+    \item Se il modello contiene \(x^k\), deve contenere anche \(x, x^2, \dots,
+    x^{k-1}\).
+\item Se il modello contiene l'interazione \(x_1^a x_2^b\), deve contenere anche
+    tutti i monomi \(x_1^cx_2^d\) che lo dividono.
+\end{itemize}
+Questo assicura che il modello sia interpretabile e invariante rispetto a
+semplici traslazioni dell'origine degli assi.
+\end{nota}
+
+\paragraph{Selezione delle Variabili in Modelli Non Lineari}
+Le procedure stepwise devono essere adattate per gestire i termini non lineari,
+tenendo sempre conto del principio gerarchico.
+\begin{itemize}
+    \item \textbf{Approccio Forward}: È generalmente preferibile perché i
+    termini polinomiali (es. \(x\) e \(x^2\)) sono spesso correlati. La
+    procedura è la seguente:
+    \begin{enumerate}
+        \item Si parte dal modello nullo.
+        \item Ad ogni passo, i candidati per l'inclusione non sono solo le
+        variabili originali, ma anche tutti i termini di ordine superiore
+        (potenze, interazioni) che si possono creare con le variabili già
+        presenti nel modello, nel rispetto della regola gerarchica.
+    \end{enumerate}
+    \item \textbf{Approccio Backward}:
+    \begin{enumerate}
+        \item Si parte da un modello lineare con tutte le variabili.
+        \item Si analizzano i residui per identificare eventuali non-linearità
+        e guidare l'aggiunta di termini polinomiali o di interazione.
+        \item Si inizia a rimuovere le variabili una alla volta, partendo da
+        quelle con il p-value più alto, ma \textbf{con il vincolo di non
+        violare mai il principio gerarchico}.
+    \end{enumerate}
+\end{itemize}
+
+\section{Regressione Pesata}
+
+La regressione pesata è una tecnica che si utilizza quando i dati non sono
+\textbf{omoschedastici}, ovvero quando la varianza degli errori non è costante
+per tutte le osservazioni (violazione dell'assunto di omoschedasticità, detta
+\textbf{eteroschedasticità}).
+
+\paragraph{Quando si usa?}
+L'eteroschedasticità si manifesta in diversi contesti:
+\begin{itemize}
+    \item Dati derivanti da una distribuzione di \textbf{Poisson}, dove la
+    varianza è approssimativamente uguale alla media (\(\sigma_i^2 \approx
+    \mu_i\)).
+    \item Dati la cui incertezza è proporzionale al valore misurato (es. errore
+    del 10\%), dove la deviazione standard è proporzionale alla media
+    (\(\sigma_i \propto \mu_i\)), e quindi la varianza è proporzionale al
+    quadrato della media (\(\sigma_i^2 \propto \mu_i^2\)).
+    \item Dati Binomiali, dove la varianza di una proporzione dipende dalla
+    proporzione stessa.
+    \item Quando i grafici dei residui mostrano una forma a "imbuto", indicando
+    che la dispersione dei residui cambia al variare dei valori di un predittore
+    o dei valori stimati.
+\end{itemize}
+
+\paragraph{Metodo di Risoluzione: Minimi Quadrati Pesati (WLS)}
+Quando l'assunzione di omoschedasticità cade, ogni osservazione \(Y_i\) segue
+una distribuzione Normale con una propria varianza: \(Y_i \sim N(\mu_i,
+\sigma_i^2)\). Per trovare gli stimatori dei parametri \(\beta\), si applica il
+principio di Massima Verosimiglianza (MLE), come visto in precedenza
+(\Cref{ex:mle-norm}).
+
+La log-verosimiglianza per questo modello è:
+\[ l(\beta) = C - \sum_{i=1}^{n} \frac{(Y_i - \sum_{j=0}^{p} \beta_j
+x_{ij})^2}{2\sigma_i^2} \]
+Massimizzare questa funzione rispetto ai \(\beta\) equivale a minimizzare la
+parte che dipende da loro, ovvero la somma dei quadrati degli errori. Tuttavia,
+ogni termine della somma è ora "pesato" dall'inverso della sua varianza.
+
+Massimizzare \(l(\beta)\) è quindi equivalente a risolvere il problema di
+minimizzazione:
+\[
+    \min_{\beta} \left( \sum_{i=1}^{n} \frac{1}{\sigma_i^2} (Y_i -
+    \sum_{j=0}^{p} \beta_j x_{ij})^2 \right)
+\]
+Questo è esattamente il criterio dei \textbf{Minimi Quadrati Pesati (WLS)}. I
+pesi (\(w_i\)) emergono naturalmente dalla derivazione della massima
+verosimiglianza e sono il reciproco delle varianze:
+\[ w_i = \frac{1}{\sigma_i^2} \]
+L'idea intuitiva di dare più "peso" alle osservazioni più precise (con
+varianza più piccola) è quindi una conseguenza diretta del principio di
+massima verosimiglianza.
+
+\begin{nota}{Metodo Equivalente: OLS su Dati Trasformati}{wls-ols-equiv}
+La regressione pesata può essere implementata in modo molto semplice come una
+regressione lineare standard (OLS) applicata a dati trasformati. Se si conoscono
+i fattori di proporzionalità degli errori (cioè \(\sigma_i \propto r_i\)), si
+possono definire delle nuove variabili:
+\[
+    \tilde{Y}_i := \frac{Y_i}{r_i} \qquad \text{e} \qquad \tilde{x}_{ij} :=
+    \frac{x_{ij}}{r_i}
+\]
+Questo include anche il termine per l'intercetta, che da \(x_{i0}=1\) diventa
+\(\tilde{x}_{i0} = 1/r_i\).
+
+Minimizzare la somma dei quadrati dei residui per queste variabili trasformate,
+\(\sum(\tilde{Y}_i - \sum \beta_j \tilde{x}_{ij})^2\), è matematicamente
+equivalente a risolvere il problema dei minimi quadrati pesati originale.
+\end{nota}

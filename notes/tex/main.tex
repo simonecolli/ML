@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage{mlnotes}
+
+% grafici
+\usepackage{pgfplots}
+\usepgfplotslibrary{statistics}
+\pgfplotsset{compat=1.18}
+% Definizione manuale della funzione di densità Gaussiana
+\pgfmathdeclarefunction{gauss}{3}{%
+  \pgfmathparse{1/(#3*sqrt(2*pi))*exp(-((#1-#2)^2)/(2*#3^2))}%
+}
+
+\renewcommand{\coursetitle}{Introduzione al Machine Learning}
+
+\renewcommand{\notedate}{%
+    Appunti del corso tenuto dal \textbf{Prof. Francesco Morandin} \\
+    \medskip % Aggiunge un piccolo spazio verticale
+    Università degli Studi di Parma \\
+    Anno Accademico 2025/2026
+}
+
+\renewcommand{\coursecode}{000}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\section*{Disclaimer}
+\vfill
+\begin{nota*}{}
+I seguenti appunti sono stati generati a partire dal materiale
+didattico e dalle note ufficiali del corso 'Introduzione al Machine Learning'.
+Il contenuto è stato riorganizzato, formattato e parzialmente rielaborato con
+l'ausilio di AI al fine di creare un documento coeso e ottimizzato per lo studio.
+
+\medskip
+
+Si raccomanda di fare sempre riferimento al materiale originale fornito dal
+docente per garantire la massima accuratezza.
+\end{nota*}
+\vfill
+
+\include{lectures/th_01-03}
+\include{lectures/th_06}
+\include{lectures/th_07-09}
+\include{lectures/th_10-12}
+\include{lectures/th_13-15}
+\include{lectures/th_16-18}
+\include{lectures/th_19-21}
+\include{lectures/th_22-24}
+\include{lectures/th_25-27}
+\include{lectures/th_28-30}
+
+\end{document}

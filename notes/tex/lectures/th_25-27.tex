@@ -1,0 +1,538 @@
+\section{Gestione delle Variabili}
+
+La corretta gestione e codifica delle variabili è un passo fondamentale nella
+costruzione di qualsiasi modello, inclusa la regressione lineare. Le variabili
+possono essere di diverse tipologie, e ciascuna richiede un trattamento
+specifico.
+
+Le variabili di ingresso si possono classificare principalmente in tre
+categorie:
+\begin{itemize}
+    \item \textbf{Numeriche}: Variabili quantitative su cui è possibile
+    eseguire operazioni aritmetiche (es. età, temperatura, reddito).
+    \item \textbf{Dicotomiche}: Variabili che possono assumere solo due valori
+    (es. maschio/femmina, sì/no, acceso/spento).
+    \item \textbf{Categoriali}: Variabili che rappresentano un gruppo o una
+    categoria, a loro volta suddivisibili in nominali e ordinali.
+\end{itemize}
+
+\subsection{Variabili Dicotomiche}
+Le variabili dicotomiche, che rappresentano due sole categorie, sono un caso
+speciale ma molto comune di variabili categoriali.
+
+\paragraph{Come Variabili di Ingresso}
+Quando usate come predittori, vengono tipicamente codificate con i numeri 0 e 1.
+In un modello di regressione:
+\[ Y = \beta_0 + \beta_1 x_1 + \dots + \beta_j x_j + \dots + \epsilon \]
+il coefficiente \(\beta_j\) associato a una variabile dicotomica \(x_j\) ha
+un'interpretazione molto diretta: rappresenta la \textbf{differenza media nella
+risposta} \(Y\) tra la categoria codificata come 1 e la categoria codificata
+come 0. Ad esempio, se \(x_j\) è 1 per "femmina" e 0 per "maschio", \(\beta_j\)
+misura di quanto, in media, la risposta \(Y\) per le femmine differisce da
+quella per i maschi.
+
+\begin{nota}{Variabili Dicotomiche come Risposta}{dichotomous-response-note}
+Utilizzare una variabile dicotomica come variabile di risposta \(Y\) non è
+appropriato per la regressione lineare standard. Per questo tipo di problema
+esistono modelli specifici, tra cui:
+\begin{itemize}
+    \item \textbf{Analisi Discriminante}
+    \item \textbf{Regressione Logistica}
+\end{itemize}
+\end{nota}
+
+\subsection{Variabili Categoriali}
+Le variabili categoriali richiedono una codifica specifica per poter essere
+incluse in un modello di regressione.
+
+\paragraph{Variabili Ordinali vs. Nominali}
+È importante distinguere tra:
+\begin{itemize}
+    \item \textbf{Variabili Nominali}: Le categorie non hanno un ordinamento
+    intrinseco. Esempi sono le stagioni (primavera, estate, autunno, inverno),
+    le regioni d'Italia o il tipo di carburante.
+    \item \textbf{Variabili Ordinali}: Le categorie possiedono un ordine
+    naturale. Esempi sono il titolo di studio (medie, maturità, laurea), una
+    classifica (I, II, III) o la gravità di un sintomo.
+\end{itemize}
+Le variabili ordinali possono essere codificate numericamente (es. 1, 2, 3...)
+rispettando l'ordine, ma bisogna essere consapevoli che questa scelta impone una
+distanza uniforme tra i livelli, il che potrebbe non essere sempre corretto.
+
+\paragraph{Codifica One-Hot per Variabili Nominali}
+Per inserire una variabile categoriale nominale in un modello di regressione, la
+tecnica standard è la \textbf{codifica one-hot}, nota anche come creazione di
+\textit{variabili dummy}.
+
+\begin{definizione}{Codifica One-Hot con Categoria di Riferimento}{one-hot-def}
+Una variabile categoriale con \(k\) livelli viene trasformata in \(k-1\) nuove
+variabili dicotomiche (0/1). Un livello viene escluso e scelto come
+\textbf{categoria di riferimento} (o \textit{default}) per evitare una perfetta
+multicollinearità.
+\end{definizione}
+
+\begin{esempio}{Codifica delle stagioni}{seasons-example}
+Consideriamo la variabile "stagione" con 4 livelli: primavera, estate, autunno,
+inverno. Scegliamo "inverno" come categoria di riferimento. Creiamo 3 nuove
+variabili dummy:
+\begin{itemize}
+    \item \(x_{\text{primavera}}\): vale 1 se la stagione è primavera, 0
+    altrimenti.
+    \item \(x_{\text{estate}}\): vale 1 se la stagione è estate, 0 altrimenti.
+    \item \(x_{\text{autunno}}\): vale 1 se la stagione è autunno, 0
+    altrimenti.
+\end{itemize}
+Il modello di regressione diventerà: \( Y = \beta_0 + \beta_1
+x_{\text{primavera}} + \beta_2 x_{\text{estate}} + \beta_3 x_{\text{autunno}} +
+\dots + \epsilon \).
+\end{esempio}
+
+L'interpretazione dei coefficienti è cruciale: ogni coefficiente \(\beta_j\)
+misura l'effetto medio sulla risposta \(Y\) di quella categoria \textbf{rispetto
+alla categoria di riferimento}.
+\begin{itemize}
+    \item Per l'inverno (riferimento), tutte le dummy sono 0 e il valore atteso
+    di Y è legato a \(\beta_0\).
+    \item Per la primavera, il valore atteso di Y è legato a \(\beta_0 +
+    \beta_1\). Quindi, \(\beta_1\) rappresenta la differenza media in \(Y\) tra
+    la primavera e l'inverno.
+\end{itemize}
+
+\begin{nota}{Variabili Categoriali come Risposta}{categorical-response-note}
+Utilizzare una variabile dicotomica o categoriale come variabile di risposta
+\(Y\) in una regressione lineare standard è problematico. Per questi casi,
+esistono modelli più appropriati come la \textbf{regressione logistica}, gli
+alberi di classificazione, le random forest o le reti neurali.
+\end{nota}
+
+\subsection{Interpretazione e Test sui Coefficienti delle Variabili Dummy}
+
+Una volta inserite le variabili dummy nel modello, è fondamentale saper
+interpretare correttamente i loro coefficienti e capire come testare ipotesi
+specifiche.
+
+\begin{esempio}{Interpretazione dei coefficienti delle
+stagioni}{seasons-coeffs-ex}
+Riprendendo il modello delle stagioni con "inverno" come riferimento:
+\[ Y = \beta_0 + \beta_1 x_{\text{primavera}} + \beta_2 x_{\text{estate}} +
+\beta_3 x_{\text{autunno}} + \epsilon \]
+Supponiamo che la stima del modello fornisca i seguenti coefficienti:
+\(\beta_0=16.4\), \(\beta_1=5.4\), \(\beta_2=6.7\), \(\beta_3=1.8\).
+Il valore medio della risposta \(Y\) per ciascuna stagione è:
+\begin{itemize}
+    \item \textbf{Inverno (riferimento)}: \( E[Y | \text{inverno}] = \beta_0 =
+    16.4 \)
+    \item \textbf{Primavera}: \( E[Y | \text{primavera}] = \beta_0 + \beta_1 =
+    16.4 + 5.4 = 21.8 \)
+    \item \textbf{Estate}: \( E[Y | \text{estate}] = \beta_0 + \beta_2 = 16.4 +
+    6.7 = 23.1 \)
+    \item \textbf{Autunno}: \( E[Y | \text{autunno}] = \beta_0 + \beta_3 = 16.4
+    + 1.8 = 18.2 \)
+\end{itemize}
+Il test t standard su un coefficiente, ad esempio \(H_0: \beta_3=0\), verifica
+se c'è una differenza significativa tra l'autunno e l'inverno. Se non si
+rifiuta l'ipotesi nulla, si conclude che le due categorie sono statisticamente
+indistinguibili.
+\end{esempio}
+
+\paragraph{Confronto tra Categorie non di Riferimento}
+Per confrontare due categorie non di riferimento (es. primavera vs. estate), non
+è sufficiente guardare i singoli p-value. Bisogna testare l'ipotesi \(H_0:
+\beta_1 = \beta_2\).
+
+\begin{esercizio}{HW: Testare la differenza tra primavera ed
+estate}{ex:compare-dummies}
+Come si può testare l'ipotesi \(H_0: \beta_1 = \beta_2\)? Ci sono due approcci.
+\begin{dimostrazione}{}{}
+\begin{enumerate}
+    \item \textbf{Test Manuale (Test Lineare Generale)}: L'ipotesi è
+    equivalente a \(H_0: \beta_1 - \beta_2 = 0\). Si può costruire una
+    statistica t per questa combinazione lineare di coefficienti:
+    \[ T = \frac{\hat{\beta}_1 - \hat{\beta}_2}{\text{SE}(\hat{\beta}_1 -
+    \hat{\beta}_2)} \]
+    dove l'errore standard al denominatore si calcola dalla matrice di
+    varianza-covarianza dei coefficienti:
+    \[ \text{SE}(\hat{\beta}_1 - \hat{\beta}_2) =
+    \sqrt{\text{Var}(\hat{\beta}_1) + \text{Var}(\hat{\beta}_2) -
+    2\text{Cov}(\hat{\beta}_1, \hat{\beta}_2)} \]
+    Questo test permette di ottenere un p-value per l'ipotesi di uguaglianza.
+
+    \item \textbf{Cambiare la Categoria di Riferimento}: Un metodo più semplice
+    e pratico consiste nel modificare il modello, scegliendo una delle categorie
+    da confrontare (es. "estate") come nuovo livello di riferimento. A questo
+    punto si riesegue la regressione. Il nuovo coefficiente associato alla
+    variabile "primavera" misurerà direttamente la differenza media di \(Y\)
+    rispetto all'"estate", e il suo test t standard fornirà il p-value
+    desiderato.
+\end{enumerate}
+\end{dimostrazione}
+\end{esercizio}
+
+\subsection{Criticità e Note Pratiche}
+
+\paragraph{Interazione con le Procedure Stepwise}
+\begin{itemize}
+    \item \textbf{Stepwise Backward}: Se la procedura elimina una variabile
+    dummy (es. \(x_{\text{autunno}}\)), significa che il test non ha trovato una
+    differenza significativa tra quella categoria e la categoria di riferimento.
+    L'effetto è che le due categorie vengono fuse o "collassate".
+    \item \textbf{Stepwise Forward}: La procedura sceglie autonomamente quale
+    categoria usare implicitamente come riferimento, e non è detto che la
+    scelta sia ottimale. Potrebbe non accorgersi che due categorie (nessuna
+    delle quali è il riferimento) sono molto simili e andrebbero accorpate.
+\end{itemize}
+
+\begin{nota}{Attenzione}{dummy-vars-warning}
+\begin{itemize}
+    \item \textbf{Aumento di \(p\)}: L'uso della codifica one-hot può aumentare
+    drasticamente il numero di predittori \(p\), specialmente per variabili con
+    molte categorie. Questo peggiora il rapporto \(n/p\) e può rendere il
+    modello instabile. Per risolvere il problema, si possono accorpare
+    manualmente alcune categorie in macro-categorie più generali e
+    significative.
+    \item \textbf{Non-Linearità}: Per le variabili dummy (0/1), l'aggiunta di
+    potenze (es. \(x^2\)) è inutile, poiché \(x^2=x\). Similmente,
+    l'interazione tra dummy della stessa variabile categoriale (es.
+    \(x_{\text{primavera}} \cdot x_{\text{estate}}\)) è sempre zero ed è
+    quindi inutile. Sono invece utili le interazioni tra dummy di variabili
+    categoriali diverse.
+\end{itemize}
+\end{nota}
+
+\subsection{Gestione delle Variabili Numeriche}
+
+Anche le variabili numeriche possono essere suddivise in base alla loro natura,
+e questo influenza la decisione di trasformarle o meno prima di inserirle in un
+modello.
+
+\paragraph{Variabili di tipo "Differenza" vs. "Rapporto"}
+\begin{itemize}
+    \item \textbf{Tipo "Differenza"}: Sono variabili per cui le differenze
+    additive sono significative e interpretabili (es. Quoziente Intellettivo,
+    statura, temperatura). Generalmente, queste variabili vengono inserite nel
+    modello così come sono, in un'ottica additiva del tipo \( Y = \beta_0 +
+    \beta_1 x_1 + \dots + \epsilon \).
+    \item \textbf{Tipo "Rapporto"}: Sono variabili tipicamente positive che
+    possono coprire diversi ordini di grandezza, per le quali i rapporti (e
+    quindi le variazioni percentuali) sono più significativi delle differenze
+    assolute (es. reddito, popolazione di una città, intensità sonora). Per
+    queste variabili è spesso opportuno applicare una trasformazione
+    logaritmica.
+\end{itemize}
+
+\begin{nota}{Trasformazioni Lineari}{linear-transform-note}
+Una trasformazione lineare della variabile di risposta (\(\tilde{Y} = mY+q\))
+non cambia la sostanza della regressione. I coefficienti vengono riscalati
+(\(\tilde{\beta}_j = m\beta_j\)), ma i risultati dei test di ipotesi (p-value,
+\(\alpha^*\)) e gli indici di bontà del modello (\(R_D^2, R_A^2\)) rimangono
+invariati.
+\end{nota}
+Le trasformazioni non-lineari, invece, possono essere usate per migliorare le
+proprietà distributive di una variabile. Ad esempio, se un predittore \(x\) ha
+una distribuzione asimmetrica a destra (\textit{right-skewed}), applicare una
+trasformazione come la radice quadrata (\(\sqrt{x}\)) o il logaritmo
+(\(\ln(x)\)) può renderne la distribuzione più simmetrica, aiutando a
+soddisfare le assunzioni del modello di regressione lineare.
+
+\subsection{Modelli Logaritmici e Interpretazione}
+
+Una delle trasformazioni più potenti e comuni è l'uso del logaritmo sulla
+variabile di risposta, specialmente quando questa è di tipo "rapporto".
+
+\paragraph{Il Modello Log-Level}
+Quando si modella il logaritmo di Y (modello log-level), la relazione diventa:
+\[ \ln(Y) = \beta_0 + \beta_1 x_1 + \dots + \epsilon \]
+Questo modello è ancora lineare nei parametri, ma implica una relazione
+\textbf{moltiplicativa} sulla scala originale di Y:
+\[ Y = e^{\beta_0} \cdot e^{\beta_1 x_1} \cdot \dots \cdot e^{\epsilon} \]
+Questo approccio è preferibile quando si ritiene che i predittori abbiano un
+effetto percentuale, e non assoluto, sulla risposta.
+
+\begin{esempio}{Interpretazione del coefficiente in un modello
+Log-Level}{log-level-interp-ex}
+Supponiamo di modellare lo stipendio (\(Y\)) in funzione di una variabile
+dicotomica \(x_1\) (1 se una persona ha frequentato un certo corso, 0
+altrimenti). Il modello è \(\ln(Y) = \beta_0 + \beta_1 x_1\).
+\begin{itemize}
+    \item Per chi non ha frequentato il corso (\(x_1=0\)): \( \ln(Y_0) = \beta_0
+    \implies Y_0 = e^{\beta_0} \)
+    \item Per chi ha frequentato il corso (\(x_1=1\)): \( \ln(Y_1) = \beta_0 +
+    \beta_1 \implies Y_1 = e^{\beta_0}e^{\beta_1} = Y_0 \cdot e^{\beta_1} \)
+\end{itemize}
+Il coefficiente \(\beta_1\) non rappresenta più una differenza additiva. Il
+fattore \(e^{\beta_1}\) è un \textbf{fattore moltiplicativo}. Se la stima del
+modello fornisce \(\hat{\beta}_1\) tale che \(e^{\hat{\beta}_1} = 1.40\),
+significa che frequentare il corso è associato a un aumento dello stipendio del
+40\% (\(Y_1 = 1.40 \cdot Y_0\)). La variazione percentuale si calcola come
+\((e^{\hat{\beta}_1} - 1) \times 100\%\).
+\end{esempio}
+
+
+\section{Regressione Logistica}
+
+La regressione logistica è un modello statistico utilizzato quando la variabile
+di risposta \(Y\) è categoriale. A differenza della regressione lineare, non
+modella direttamente il valore della risposta, ma la \textbf{probabilità} che
+la risposta appartenga a una determinata categoria.
+
+\subsection{Regressione Logistica Binomiale}
+Il caso più comune è quello in cui la variabile di risposta è
+\textbf{dicotomica}, ovvero può assumere solo due valori (es. 0/1,
+successo/fallimento, malato/sano).
+
+\paragraph{Il Modello}
+L'obiettivo è modellare la probabilità che la risposta sia 1, dato un set di
+predittori \(X\). Poiché una probabilità deve essere compresa tra 0 e 1, si
+utilizza la \textbf{funzione logistica (o sigmoide)} per mappare la combinazione
+lineare dei predittori (chiamata \textbf{logit}) nell'intervallo (0, 1).
+
+\begin{definizione}{Funzione Logistica (Sigmoide)}{sigmoid-def}
+Il modello lega i predittori alla probabilità di successo \(p(X) = P(Y=1 | X)\)
+attraverso la seguente relazione:
+\[
+    p(X) = \sigma(z) = \frac{1}{1+e^{-z}}
+\]
+dove \(z = \beta_0 + \beta_1 x_1 + \dots + \beta_p x_p\) è il logit.
+\end{definizione}
+
+\paragraph{Stima tramite Massima Verosimiglianza (MLE)}
+Per stimare i coefficienti \(\beta_j\), si assume che ogni osservazione \(y_i\)
+sia il risultato di una \textbf{prova Bernoulliana}. La probabilità di successo
+di questa prova, \(p_i\), è data dal modello logistico. La funzione di massa di
+probabilità per una singola osservazione è quindi:
+\[ P(Y=y_i | X_i) = p_i^{y_i}(1-p_i)^{1-y_i} \]
+La verosimiglianza (\textit{likelihood}) per l'intero dataset di \(N\)
+osservazioni indipendenti è il prodotto delle singole probabilità. Per
+semplicità, si massimizza la sua versione logaritmica (la
+\textbf{log-verosimiglianza}):
+\begin{align*}
+    l(\beta) &= \log \left( \prod_{i=1}^{N} p_i^{y_i}(1-p_i)^{1-y_i} \right) \\
+    &= \sum_{i=1}^{N} \left[ y_i \log(p_i) + (1-y_i) \log(1-p_i) \right]
+\end{align*}
+Questa espressione è esattamente l'opposto della funzione di costo di
+\textbf{cross-entropy}. Pertanto, massimizzare la verosimiglianza è equivalente
+a minimizzare la cross-entropy.
+
+\begin{nota}{Inferenza sui Coefficienti}{logistic-inference-note}
+A differenza della regressione lineare, i coefficienti \(\beta_j\) non seguono
+una distribuzione t di Student. Tuttavia, si basano su approssimazioni alla
+distribuzione normale per grandi campioni. L'inferenza statistica e la selezione
+delle variabili sono quindi possibili e si basano comunemente su:
+\begin{itemize}
+    \item \textbf{Wald Test}: Un test simile al t-test per verificare l'ipotesi
+    nulla che un singolo coefficiente sia uguale a zero.
+    \item \textbf{Likelihood-Ratio Test (LRT)}: Un test più robusto per
+    confrontare modelli annidati e valutare la significatività di un gruppo di
+    variabili.
+\end{itemize}
+\end{nota}
+
+Una volta addestrato, il modello si usa per prevedere la probabilità di
+successo per nuove osservazioni.
+
+\subsection{Regressione Logistica Multinomiale}
+Questa è la generalizzazione del modello a casi in cui la variabile di risposta
+ha più di due categorie (es. \(k \in \{1, \dots, m\}\)).
+
+\paragraph{Il Modello}
+Il modello predice un vettore di probabilità \(\pi = (\pi_1, \pi_2, \dots,
+\pi_m)\), dove \(\pi_k\) è la probabilità che l'osservazione appartenga alla
+categoria \(k\), con il vincolo che \(\sum \pi_k = 1\). Per fare ciò, si usa la
+\textbf{funzione softmax}, che è la generalizzazione della sigmoide.
+
+\begin{definizione}{Funzione Softmax}{softmax-def}
+Per ogni categoria \(k\) si calcola un logit \(z_k\) con un set di parametri
+dedicato \(w_k\):
+\[
+    z_k = w_{k0} + w_{k1}x_1 + \dots + w_{kp}x_p
+\]
+La probabilità per la categoria \(k\) è data dalla funzione softmax, che
+normalizza i logit:
+\[
+    \pi_k = \text{softmax}(z_k) = \frac{e^{z_k}}{\sum_{j=1}^{m} e^{z_j}}
+\]
+\end{definizione}
+
+\paragraph{Stima del Modello}
+La stima dei parametri \(w\) avviene, anche in questo caso, massimizzando la
+verosimiglianza, la cui derivazione è discussa in \ref{likelihood:mult_cond}.
+Ciò corrisponde a minimizzare la \textbf{loss di cross-entropy categoriale},
+che per una singola osservazione è:
+\[ H(y_i, \pi_i) = - \sum_{k=1}^{m} y_{ik} \log(\pi_{ik}) \]
+dove \(y_i\) è il vettore one-hot della classe vera (es. `[0, 1, 0]`) e
+\(\pi_i\) è il vettore delle probabilità predette. La loss totale da
+minimizzare è la media di questa quantità su tutto il dataset.
+
+\begin{nota}{Nota Pratica sull'Implementazione della
+Loss}{loss-implementation-note}
+Sebbene la cross-entropy sia concettualmente definita tra la distribuzione di
+probabilità vera (\(y_i\)) e quella predetta (\(\pi_i\)), nella pratica è
+sconsigliato calcolare manualmente la funzione softmax per ottenere le
+probabilità \(\pi_i\) e poi passarle alla funzione di loss.
+
+Il calcolo esplicito dell'esponenziale nella funzione softmax (\(e^{z_k}\)) può
+portare a instabilità numerica (errori di \textit{overflow} o
+\textit{underflow}) quando i valori dei logit \(z_k\) sono molto grandi o molto
+piccoli.
+
+Per questo motivo, le librerie software di machine learning (come TensorFlow,
+PyTorch, Scikit-learn) offrono implementazioni della cross-entropy loss che
+prendono in input direttamente i \textbf{logit} grezzi. Queste funzioni
+utilizzano internamente degli accorgimenti matematici (come il trucco
+"Log-Sum-Exp") per calcolare la loss in modo numericamente stabile.
+
+Pertanto, la regola pratica è: \textbf{passare sempre i logit, non le
+probabilità, alla funzione di loss fornita dalla libreria}.
+\end{nota}
+
+
+
+\section{Analisi della Varianza (ANOVA)}
+
+L'Analisi della Varianza (ANOVA) è una tecnica statistica che può essere vista
+come una variante della regressione lineare, utilizzata quando le variabili di
+ingresso sono \textbf{categoriali}. Il modello analizza la relazione tra una o
+più variabili categoriali indipendenti e una variabile dipendente numerica,
+assumendo che l'errore sia additivo, Gaussiano e omoschedastico.
+
+I principali tipi di ANOVA sono:
+\begin{itemize}
+    \item \textbf{ANOVA a una via}: utilizzata quando si ha una sola variabile
+    di ingresso categoriale.
+    \item \textbf{ANOVA a due vie}: utilizzata con due variabili di ingresso
+    categoriali. Si distingue tra disegni con o senza repliche (più di
+    un'osservazione per ogni combinazione di categorie).
+\end{itemize}
+
+\subsection{ANOVA a Una Via (One-Way ANOVA)}
+Questo è il modello ANOVA più semplice. Si usa per confrontare le medie di tre
+o più gruppi (categorie) definiti da un singolo fattore.
+
+\paragraph{Il Modello Statistico}
+L'idea centrale è che ogni categoria della variabile di ingresso possa avere
+una propria media per la variabile di risposta. Si assume che la varianza
+all'interno di ogni gruppo sia la stessa per tutti (omoschedasticità).
+
+\begin{definizione}{Modello ANOVA a una via}{oneway-anova-def}
+Sia \(Y_{ij}\) la \(j\)-esima osservazione nel \(i\)-esimo gruppo, dove \(i=1,
+\dots, m\) (numero di gruppi) e \(j=1, \dots, n_i\) (numerosità del gruppo
+\(i\)). Il modello statistico è:
+\[ Y_{ij} \sim N(\mu_i, \sigma^2) \]
+I dati sono assunti indipendenti. I parametri incogniti del modello sono le
+\(m\) medie dei gruppi \(\mu_1, \mu_2, \dots, \mu_m\) e la varianza comune
+\(\sigma^2\).
+\end{definizione}
+
+\paragraph{Stima dei Parametri del Modello}
+La stima dei parametri incogniti del modello avviene a partire dai dati
+campionari.
+
+\begin{itemize}
+    \item \textbf{Stima delle Medie (\(\mu_i\))}: La stima naturale per la media
+    di ciascun gruppo è la sua media campionaria:
+    \[ \hat{\mu}_i = \bar{Y}_{i*} = \frac{1}{n_i} \sum_{j=1}^{n_i} Y_{ij} \]
+
+    \item \textbf{Stima della Varianza Comune (\(\sigma^2\))}: La stima della
+    varianza comune \(\sigma^2\) è un processo a due passi.
+    \begin{enumerate}
+        \item \textbf{Stima per singolo gruppo}: Per prima cosa, si calcola la
+        varianza campionaria per ciascun gruppo \(i\), definita come \(S_i^2\):
+        \[ S_i^2 = \frac{1}{n_i-1} \sum_{j=1}^{n_i} (Y_{ij} - \bar{Y}_{i*})^2 \]
+        Ognuno di questi \(S_i^2\) è uno stimatore corretto di \(\sigma^2\)
+        (cioè \(E[S_i^2] = \sigma^2\)), ma utilizza solo una parte dei dati. Si
+        ottengono così \(m\) stimatori diversi per lo stesso parametro.
+        
+        \item \textbf{Combinazione degli stimatori (Stimatore Pooled)}: Per
+        ottenere una stima singola e più robusta, si combinano gli \(m\)
+        stimatori in una media pesata. Lo stimatore risultante è detto
+        \textbf{stimatore pooled della varianza} o \textbf{Within} (\(S_W^2\)),
+        noto anche come \textbf{Mean Square Within} (MSW):
+        \[ S_W^2 = \frac{\sum_{i=1}^{m} (n_i-1)S_i^2}{N-m} \]
+    \end{enumerate}
+\end{itemize}
+
+\begin{definizione}{Somma dei Quadrati Entro i Gruppi (SSW)}{ssw-def}
+Il numeratore dello stimatore \(S_W^2\) è la Somma dei Quadrati Entro i Gruppi
+(Sum of Squares Within), o \textbf{devianza within}:
+\[ SS_W = \sum_{i=1}^{m} (n_i-1)S_i^2 = \sum_{i=1}^{m} \sum_{j=1}^{n_i} (Y_{ij}
+- \bar{Y}_{i*})^2 \]
+Questa quantità rappresenta la variabilità totale all'interno dei gruppi e
+corrisponde alla Somma dei Quadrati dei Residui (SSR) del modello ANOVA. Lo
+stimatore della varianza può essere scritto come:
+\[ S_W^2 = \frac{SS_W}{N-m} \]
+\end{definizione}
+
+\paragraph{Inferenza sui Singoli Parametri}
+Disponendo degli stimatori e delle loro distribuzioni, è possibile costruire
+test e intervalli di confidenza sui singoli parametri, come ad esempio per una
+singola media \(\mu_i\) tramite la statistica \(T = \frac{\bar{Y}_{i*} -
+\mu_i}{S_W / \sqrt{n_i}} \sim t(N-m)\).
+
+\subsection{Il Test F nell'ANOVA a Una Via}
+Lo scopo principale dell'ANOVA a una via è testare se le medie dei vari gruppi sono tutte uguali o se almeno una è diversa. Questo permette di determinare se la variabile categoriale ha un effetto statisticamente significativo sulla variabile di risposta.
+
+\paragraph{Ipotesi del Test}
+Il test fondamentale dell'ANOVA confronta due ipotesi:
+\begin{itemize}
+    \item \textbf{Ipotesi Nulla (\(H_0\))}: Tutte le medie dei gruppi sono uguali.
+    \[ H_0: \mu_1 = \mu_2 = \dots = \mu_m \]
+    Sotto \(H_0\), la variabile categoriale non ha alcun effetto sulla risposta \(Y\).
+    \item \textbf{Ipotesi Alternativa (\(H_1\))}: Non tutte le medie sono uguali (almeno una è diversa). Sotto \(H_1\), la variabile categoriale ha un effetto su \(Y\).
+\end{itemize}
+
+\paragraph{Decomposizione della Varianza}
+La logica del test F si basa sulla scomposizione della variabilità totale dei dati in due parti: la variabilità \textit{tra} i gruppi e la variabilità \textit{all'interno} dei gruppi.
+
+\begin{definizione}{Somma dei Quadrati Totale (SST)}{sst-def}
+La Somma dei Quadrati Totale misura la variabilità totale di tutte le osservazioni attorno alla media generale (\(\bar{Y}_{**}\)).
+\[SS_T = \sum_{i=1}^{m}\sum_{j=1}^{n_i} (Y_{ij} - \bar{Y}_{**})^2\]
+\end{definizione}
+
+\begin{definizione}{Somma dei Quadrati Tra i Gruppi (SSB)}{ssb-def}
+La Somma dei Quadrati Tra i Gruppi, o \textbf{devianza between}, misura la variabilità delle medie di ciascun gruppo attorno alla media generale. Ha \(m-1\) gradi di libertà.
+\[ SS_B = \sum_{i=1}^{m} n_i (\bar{Y}_{i*} - \bar{Y}_{**})^2 \]
+\end{definizione}
+Queste quantità sono legate alla devianza within (\(SS_W\)) dalla relazione
+fondamentale:
+\[
+    SS_T = SS_B + SS_W
+\]
+
+\paragraph{La Statistica del Test F}
+Il test si basa sul confronto tra la varianza stimata "tra" i gruppi e quella "entro" i gruppi. Queste stime sono chiamate \textbf{Medie dei Quadrati} (Mean Squares).
+
+\begin{definizione}{Medie dei Quadrati (MS)}{ms-def}
+Le Medie dei Quadrati si ottengono dividendo le somme dei quadrati per i rispettivi gradi di libertà.
+\begin{itemize}
+    \item \textbf{Media dei Quadrati Tra i Gruppi}: \( MS_B = S_B^2 = \frac{SS_B}{m-1} \)
+    \item \textbf{Media dei Quadrati Entro i Gruppi}: \( MS_W = S_W^2 = \frac{SS_W}{N-m} \)
+\end{itemize}
+L'idea è che \(MS_W\) è sempre una stima corretta della varianza \(\sigma^2\), mentre \(MS_B\) lo è solo se \(H_0\) è vera. Se \(H_0\) è falsa, \(MS_B\) tenderà ad essere più grande.
+\end{definizione}
+
+\begin{teorema}{Test F per l'ANOVA a una via}{anova-f-test-thm}
+La statistica del test è il rapporto tra le due medie dei quadrati:
+\[ F_{ANOVA} = \frac{MS_B}{MS_W} = \frac{S_B^2}{S_W^2} \]
+Sotto l'ipotesi nulla \(H_0\), questa statistica segue una distribuzione F di Fisher con \(m-1\) e \(N-m\) gradi di libertà:
+\[ F_{ANOVA} \sim F(m-1, N-m) \]
+Poiché sotto \(H_1\) la statistica F tende ad assumere valori grandi, il test è \textbf{unilaterale destro}.
+\end{teorema}
+
+\subsection{Verifica delle Assunzioni e Note Pratiche}
+\begin{nota}{Attenzione alle Cose Pratiche}{anova-practical-notes}
+\begin{itemize}
+    \item \textbf{Analisi dei Residui}: È fondamentale verificare le assunzioni
+    del modello analizzando i residui (\(R_{ij} = Y_{ij} - \bar{Y}_{i*}\)).
+    Graficamente, si deve controllare che siano approssimativamente Gaussiani,
+    omoschedastici (varianza costante tra i gruppi), indipendenti dal predittore
+    e che non presentino outlier evidenti.
+    \item \textbf{Trasformazioni}: Se le assunzioni non sono soddisfatte, a
+    volte una trasformazione non lineare della variabile di risposta \(Y\) (es.
+    logaritmo) può risolvere il problema.
+    \item \textbf{Accettazione di \(H_0\)}: Se il test F non porta a rifiutare
+    l'ipotesi nulla, significa che non c'è evidenza statistica che la variabile
+    categoriale influenzi la risposta. In questo caso, si potrebbe considerare
+    di ignorare la suddivisione in gruppi e analizzare i dati come un unico
+    campione Gaussiano i.i.d. \(Y_i \sim N(\mu, \sigma^2)\).
+\end{itemize}
+\end{nota}
