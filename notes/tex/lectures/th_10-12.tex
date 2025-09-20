@@ -44,6 +44,13 @@ dove \( V \in \mathbb{R}^{d \times d} \) è la matrice degli autovettori di \(
 \Sigma = \mathrm{Cov}(X) \). Le nuove variabili \( Y \) sono scorrelate e
 ordinate per varianza decrescente.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_10_12/rotation_transformation.png}
+    \caption{Esempio di rotazione di un vettore aleatorio bidimensionale. La distribuzione originale centrata (a sinistra) viene ruotata in modo che i suoi assi principali coincidano con le direzioni di massima varianza (a destra).}
+    \label{fig:rotation_transformation}
+\end{figure}
+
 \subsection{Autovalori e autovettori della covarianza}
 
 \begin{teorema}{Teorema spettrale per la matrice di covarianza}{pca-spettrale}
@@ -217,12 +224,28 @@ Ci sono due modalità comuni per eseguire la PCA:
 
 \begin{enumerate}
   \item Centrare i dati rispetto alla media, poi eseguire la PCA sulla matrice
-  di covarianza \( \Sigma = \mathrm{Cov}(X) \) e infine standardizzare.
+  di covarianza \( \Sigma = \mathrm{Cov}(X) \) e infine standardizzare (Vedi
+  immagine \ref{fig:pca_progressione1}).
   \item Centrare i dati rispetto alla media, standardizzare ogni variabile
   (cioè trasformarla in una variabile con media 0 e varianza 1), poi fare la
   PCA sulla matrice di correlazione ed eventualmente standardizzare di nuovo
-  subito dopo.
+  subito dopo. (Vedi
+  immagine \ref{fig:pca_progressione2}).
 \end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_10_12/pca_progressione1.png}
+    \caption{Esempio di primo approccio alla PCA: 1) Dati originali. 2) Dati centrati. 3) PCA. 4) Dati standardizzati dopo la PCA.}
+    \label{fig:pca_progressione1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_10_12/pca_progressione2.png}
+    \caption{Esempio di secondo approccio alla PCA: 1) Dati originali. 2) Standardizzazione completa. 3) PCA. 4) Dati standardizzati dopo la PCA.}
+    \label{fig:pca_progressione2}
+\end{figure}
 
 Questi due approcci corrispondono a:
 
@@ -372,11 +395,18 @@ principali con autovalori maggiori spiegano una porzione maggiore della varianza
 totale.
 
 Un approccio comune è quello di utilizzare un grafico dei cosiddetti
-\textbf{cambiamenti di pendenza} (come lo scree plot) per determinare il numero
+\textbf{cambiamenti di pendenza} (come lo scree plot \ref{fig:screeplot}) per determinare il numero
 di componenti principali da mantenere. Un cambiamento significativo nella
 pendenza suggerisce il numero ottimale di componenti da considerare:
 Nel grafico sopra, le prime 3 componenti sembrano spiegare la maggior parte
 della varianza.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/th_10_12/screeplot.png}
+    \caption{Esempio di scree plot per la selezione del numero di componenti principali. Si osserva un cambiamento di pendenza significativo dopo la terza componente, suggerendo che le prime tre componenti catturano la maggior parte della varianza.}
+    \label{fig:screeplot}
+\end{figure}
 
 \subsection{Quando standardizzare i dati}
 
