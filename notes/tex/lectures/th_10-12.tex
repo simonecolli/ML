@@ -480,6 +480,13 @@ Geometricamente, per $p=2$, la funzione di densità di probabilità (PDF) ha una
 forma a campana tridimensionale. Le curve di livello di questa campana sono
 ellissi concentriche centrate in $\mu$.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/th_10_12/gaussiana_multidimensionale_2d3d.png}
+    \caption{Esempio di distribuzione Gaussiana bivariata con media $\mu$ e matrice di covarianza $\Sigma$. Le curve di livello sono ellissi che rappresentano le regioni di uguale densità di probabilità.}
+    \label{fig:gaussiana_bivariata}
+\end{figure}
+
 \begin{proposizione}{Funzione di Densità di Probabilità (PDF)}{gaussiana-pdf}
 Se la matrice di covarianza $\Sigma$ è invertibile (ovvero definita positiva),
 allora il vettore aleatorio $X$ ammette una funzione di densità di probabilità
@@ -666,6 +673,14 @@ $$
 definita sul simplesso $x_i \ge 0$ e $\sum x_i = 1$. $C_\alpha$ è una costante
 di normalizzazione che dipende dalla funzione Gamma.
 \end{proposizione}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_10_12/dirichlet.png}
+    \caption{Esempio di distribuzione di Dirichlet tramite simplesso 2D. Le regioni colorate rappresentano diverse modalità della distribuzione.}
+    \label{fig:dirichlet}
+\end{figure}
 
 \begin{proposizione}{Valore Atteso}{dirichlet-valore-atteso}
 Il valore atteso di un vettore $X \sim \text{Dirichlet}(\alpha)$ è:
