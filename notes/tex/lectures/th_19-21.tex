@@ -3,62 +3,89 @@
 % ===================================================================
 \section{Richiami di Inferenza Statistica: Il Test d'Ipotesi}
 
-L'inferenza statistica fornisce gli strumenti per trarre conclusioni su una popolazione partendo da dati campionari, che sono intrinsecamente affetti da variabilità casuale. Il test di ipotesi è la procedura formale per prendere decisioni in condizioni di incertezza.
+L'inferenza statistica fornisce gli strumenti per trarre conclusioni su una
+popolazione partendo da dati campionari, che sono intrinsecamente affetti da
+variabilità casuale. Il test di ipotesi è la procedura formale per prendere
+decisioni in condizioni di incertezza.
 
 \begin{nota}{Analogia: Il Tribunale della Statistica}{courtroom-analogy}
-Un test di ipotesi funziona come un processo in tribunale:
-\begin{itemize}
-    \item L'\textbf{ipotesi nulla ($H_0$)} è l'imputato, presunto innocente (status quo).
-    \item I \textbf{dati campionari} sono le prove presentate.
-    \item Lo \textbf{statistico} è il giudice che valuta se le prove sono abbastanza schiaccianti da rifiutare l'ipotesi nulla.
-\end{itemize}
+	Un test di ipotesi funziona come un processo in tribunale:
+	\begin{itemize}
+		\item L'\textbf{ipotesi nulla ($H_0$)} è l'imputato, presunto innocente
+		      (status quo).
+		\item I \textbf{dati campionari} sono le prove presentate.
+		\item Lo \textbf{statistico} è il giudice che valuta se le prove sono
+		      abbastanza schiaccianti da rifiutare l'ipotesi nulla.
+	\end{itemize}
 \end{nota}
 
 \subsection{Le Componenti Fondamentali di un Test}
 
 \begin{definizione}{Ipotesi Nulla ($H_0$) e Alternativa ($H_1$)}{hypotheses-def}
-Ogni test si fonda su due ipotesi contrapposte e mutualmente esclusive:
-\begin{itemize}
-    \item \textbf{Ipotesi Nulla ($H_0$)}: L'ipotesi dell'assenza di un effetto. Afferma che ogni differenza osservata è dovuta al caso. È l'ipotesi che cerchiamo di smentire (es. $H_0: \mu = 100$).
-    \item \textbf{Ipotesi Alternativa ($H_1$)}: L'ipotesi che si contrappone alla nulla. Può essere \textbf{bilaterale} (es. $H_1: \mu \neq 100$) o \textbf{unilaterale} (es. $H_1: \mu > 100$).
-\end{itemize}
+	Ogni test si fonda su due ipotesi contrapposte e mutualmente esclusive:
+	\begin{itemize}
+		\item \textbf{Ipotesi Nulla ($H_0$)}: L'ipotesi dell'assenza di un
+		      effetto. Afferma che ogni differenza osservata è dovuta al caso. È
+		      l'ipotesi che cerchiamo di smentire (es. $H_0: \mu = 100$).
+		\item \textbf{Ipotesi Alternativa ($H_1$)}: L'ipotesi che si contrappone
+		      alla nulla. Può essere \textbf{bilaterale} (es. $H_1: \mu \neq 100$) o
+		      \textbf{unilaterale} (es. $H_1: \mu > 100$).
+	\end{itemize}
 \end{definizione}
 
 \begin{definizione}{Statistica Test e p-value}{test-stat-pvalue-def}
-\begin{itemize}
-    \item \textbf{Statistica Test}: Un valore calcolato dai dati campionari che misura quanto questi si discostino da ciò che ci aspetteremmo se $H_0$ fosse vera.
-    \item \textbf{p-value}: La probabilità di osservare un valore della statistica test altrettanto o più estremo di quello ottenuto, \textit{assumendo che l'ipotesi nulla sia vera}. Un p-value piccolo indica che i dati osservati sono improbabili sotto $H_0$.
-\end{itemize}
+	\begin{itemize}
+		\item \textbf{Statistica Test}: Un valore calcolato dai dati campionari
+		      che misura quanto questi si discostino da ciò che ci aspetteremmo se
+		      $H_0$ fosse vera.
+		\item \textbf{p-value}: La probabilità di osservare un valore della
+		      statistica test altrettanto o più estremo di quello ottenuto,
+		      \textit{assumendo che l'ipotesi nulla sia vera}. Un p-value piccolo
+		      indica che i dati osservati sono improbabili sotto $H_0$.
+	\end{itemize}
 \end{definizione}
 
-\paragraph{La Regola di Decisione.} Si fissa una soglia di significatività $\alpha$ (solitamente 0.05).
+\paragraph{La Regola di Decisione.} Si fissa una soglia di significatività
+$\alpha$ (solitamente 0.05).
 \begin{itemize}
-    \item \textbf{Se p-value $<\alpha$}: Si rifiuta $H_0$. Il risultato è statisticamente significativo.
-    \item \textbf{Se p-value $\geq \alpha$}: Non si rifiuta $H_0$. Non abbiamo prove sufficienti per smentirla.
+	\item \textbf{Se p-value $<\alpha$}: Si rifiuta $H_0$. Il risultato è
+	      statisticamente significativo.
+	\item \textbf{Se p-value $\geq \alpha$}: Non si rifiuta $H_0$. Non abbiamo
+	      prove sufficienti per smentirla.
 \end{itemize}
 
 \subsection{Errori e Potenza di un Test}
 
-Nel prendere una decisione basata su un test di ipotesi, ci sono quattro possibili esiti che possono essere riassunti in una tabella di contingenza, spesso chiamata matrice di confusione del test.
+Nel prendere una decisione basata su un test di ipotesi, ci sono quattro
+possibili esiti che possono essere riassunti in una tabella di contingenza,
+spesso chiamata matrice di confusione del test.
 
 \begin{center}
-    \begin{tabular}{cc|c|c|}
-      & \multicolumn{1}{c}{} & \multicolumn{2}{c}{\textbf{Decisione Presa}}\\
-      & \multicolumn{1}{c}{} & \multicolumn{1}{c}{Non Rifiuto $H_0$} & \multicolumn{1}{c}{Rifiuto $H_0$}\\
-      \cline{3-4}
-      \textbf{Realtà} & $H_0$ è Vera & \textit{Decisione Corretta} & \textbf{Errore I Tipo} $(\alpha)$ \\
-      \cline{3-4}
-                      & $H_0$ è Falsa & \textbf{Errore II Tipo} $(\beta)$ & \textit{Decisione Corretta} \\
-      \cline{3-4}
-    \end{tabular}
+	\begin{tabular}{cc|c|c|}
+		                & \multicolumn{1}{c}{}              &
+		\multicolumn{2}{c}{\textbf{Decisione Presa}}                                              \\
+		                & \multicolumn{1}{c}{}              & \multicolumn{1}{c}{Non Rifiuto
+		$H_0$}          & \multicolumn{1}{c}{Rifiuto $H_0$}                                       \\
+		\cline{3-4}
+		\textbf{Realtà} & $H_0$ è Vera                      & \textit{Decisione Corretta}       &
+		\textbf{Errore I Tipo} $(\alpha)$                                                         \\
+		\cline{3-4}
+		                & $H_0$ è Falsa                     & \textbf{Errore II Tipo} $(\beta)$ &
+		\textit{Decisione Corretta}                                                               \\
+		\cline{3-4}
+	\end{tabular}
 \end{center}
 
 \begin{definizione}{Errori di I e II Tipo e Potenza}{errors-power-def}
-\begin{itemize}
-    \item \textbf{Errore di I Tipo (Falso Positivo)}: Rifiutare un'$H_0$ vera. La sua probabilità è $\alpha$.
-    \item \textbf{Errore di II Tipo (Falso Negativo)}: Non rifiutare un'$H_0$ falsa. La sua probabilità è $\beta$.
-    \item \textbf{Potenza del Test}: La probabilità di rifiutare correttamente un'$H_0$ falsa. È definita come \textbf{Potenza $= 1 - \beta$}.
-\end{itemize}
+	\begin{itemize}
+		\item \textbf{Errore di I Tipo (Falso Positivo)}: Rifiutare un'$H_0$
+		      vera. La sua probabilità è $\alpha$.
+		\item \textbf{Errore di II Tipo (Falso Negativo)}: Non rifiutare
+		      un'$H_0$ falsa. La sua probabilità è $\beta$.
+		\item \textbf{Potenza del Test}: La probabilità di rifiutare
+		      correttamente un'$H_0$ falsa. È definita come \textbf{Potenza $= 1 -
+				      \beta$}.
+	\end{itemize}
 \end{definizione}
 
 
@@ -67,366 +94,579 @@ Nel prendere una decisione basata su un test di ipotesi, ci sono quattro possibi
 % ===================================================================
 \section{Inferenza nel Modello di Regressione Lineare}
 
-Applichiamo ora i concetti di inferenza al modello di regressione lineare per valutare la significatività dei parametri stimati.
+Applichiamo ora i concetti di inferenza al modello di regressione lineare per
+valutare la significatività dei parametri stimati.
 
 \subsection{Regressione Lineare Semplice}
 
-\subsubsection{\texorpdfstring{Test di Ipotesi sul Coefficiente \(\beta_1\)}{Test di Ipotesi sul Coefficiente beta1}}
+\subsubsection{\texorpdfstring{Test di Ipotesi sul Coefficiente
+		\(\beta_1\)}{Test di Ipotesi sul Coefficiente beta1}}
 
-\paragraph{Obiettivo:} Verificare se esista una relazione lineare statisticamente significativa tra la variabile di input \(X\) e la variabile di risposta \(Y\), rispondendo alla domanda: "Y dipende davvero da X?".
+\paragraph{Obiettivo:} Verificare se esista una relazione lineare
+statisticamente significativa tra la variabile di input \(X\) e la variabile di
+risposta \(Y\), rispondendo alla domanda: "Y dipende davvero da X?".
 
 \paragraph{Ipotesi:}
 Le ipotesi statistiche per il parametro \(\beta_1\) sono:
 \begin{itemize}
-    \item \textbf{Ipotesi Nulla $H_0$}: $\beta_1 = 0$ (non c'è relazione lineare; la pendenza è nulla).
-    \item \textbf{Ipotesi Alternativa $H_1$}: $\beta_1 \neq 0$ (esiste una relazione lineare).
+	\item \textbf{Ipotesi Nulla $H_0$}: $\beta_1 = 0$ (non c'è relazione
+	      lineare; la pendenza è nulla).
+	\item \textbf{Ipotesi Alternativa $H_1$}: $\beta_1 \neq 0$ (esiste una
+	      relazione lineare).
 \end{itemize}
 
 \paragraph{Procedura di Derivazione della Statistica Test:}
-La costruzione della statistica test parte dalla distribuzione dello stimatore \(B_1\) e segue una serie di passaggi di standardizzazione.
+La costruzione della statistica test parte dalla distribuzione dello stimatore
+\(B_1\) e segue una serie di passaggi di standardizzazione.
 
 \begin{enumerate}
-    \item \textbf{Distribuzione dello Stimatore:} Lo stimatore \(B_1\) segue una distribuzione Normale la cui varianza è nota dalla teoria (si veda l'applicazione del Teorema di Cochran).
-    \[
-        B_1 \sim \mathcal{N}\left(\beta_1, \frac{\sigma^2}{n(\overline{x^2}-\bar{x}^2)}\right)
-    \]
+	\item \textbf{Distribuzione dello Stimatore:} Lo stimatore \(B_1\) segue una
+	      distribuzione Normale la cui varianza è nota dalla teoria (si veda
+	      l'applicazione del Teorema di Cochran).
+	      \[
+		      B_1 \sim \mathcal{N}\left(\beta_1,
+		      \frac{\sigma^2}{n(\overline{x^2}-\bar{x}^2)}\right)
+	      \]
 
-    \item \textbf{Funzione Ancillare (Normale):} Standardizzando \(B_1\) si ottiene una variabile con distribuzione \(\mathcal{N}(0,1)\), che però dipende ancora dal parametro ignoto \(\sigma\).
-    \[
-        \frac{B_1 - \beta_1}{\sigma} \sqrt{n(\overline{x^2}-\bar{x}^2)} \sim \mathcal{N}(0,1)
-    \]
-    
-    \item \textbf{Funzione Ancillare (t-Student):} Sostituendo \(\sigma\) con la sua stima \(S_e\), la distribuzione diventa una t-Student con \(n-2\) gradi di libertà.
-    \[
-        \frac{B_1 - \beta_1}{S_e} \sqrt{n(\overline{x^2}-\bar{x}^2)} \sim t(n-2)
-    \]
-    
-    \item \textbf{Statistica Test Finale:} Valutando la funzione ancillare sotto l'ipotesi nulla \(H_0: \beta_1 = 0\), si ottiene la statistica test finale da calcolare con i dati.
-    \[
-        T = \frac{B_1}{S_e} \sqrt{n(\overline{x^2}-\bar{x}^2)}
-    \]
+	\item \textbf{Funzione Ancillare (Normale):} Standardizzando \(B_1\) si
+	      ottiene una variabile con distribuzione \(\mathcal{N}(0,1)\), che però
+	      dipende ancora dal parametro ignoto \(\sigma\).
+	      \[
+		      \frac{B_1 - \beta_1}{\sigma} \sqrt{n(\overline{x^2}-\bar{x}^2)}
+		      \sim \mathcal{N}(0,1)
+	      \]
+
+	\item \textbf{Funzione Ancillare (t-Student):} Sostituendo \(\sigma\) con la
+	      sua stima \(S_e\), la distribuzione diventa una t-Student con \(n-2\) gradi
+	      di libertà.
+	      \[
+		      \frac{B_1 - \beta_1}{S_e} \sqrt{n(\overline{x^2}-\bar{x}^2)} \sim
+		      t(n-2)
+	      \]
+
+	\item \textbf{Statistica Test Finale:} Valutando la funzione ancillare sotto
+	      l'ipotesi nulla \(H_0: \beta_1 = 0\), si ottiene la statistica test finale
+	      da calcolare con i dati.
+	      \[
+		      T = \frac{B_1}{S_e} \sqrt{n(\overline{x^2}-\bar{x}^2)}
+	      \]
 \end{enumerate}
 
 \paragraph{Metodi di Decisione:}
-Una volta calcolato il valore \(T_{obs}\) della statistica test, si può procedere in due modi:
+Una volta calcolato il valore \(T_{obs}\) della statistica test, si può
+procedere in due modi:
 
 \begin{itemize}
-    \item \textbf{Regione di Accettazione (R.A.):} Si confronta \(|T_{obs}|\) con un valore critico \(q\). Se \(|T_{obs}| > q\), si rifiuta \(H_0\). Il valore di \(q\) è il quantile della distribuzione t-Student tale che \(q = F_{t(n-2)}^{-1}(1-\alpha/2)\).
+	\item \textbf{Regione di Accettazione (R.A.):} Si confronta \(|T_{obs}|\)
+	      con un valore critico \(q\). Se \(|T_{obs}| > q\), si rifiuta \(H_0\). Il
+	      valore di \(q\) è il quantile della distribuzione t-Student tale che \(q =
+	      F_{t(n-2)}^{-1}(1-\alpha/2)\).
 
-    \item \textbf{p-value:} Si calcola la probabilità di osservare un valore della statistica test altrettanto o più estremo di quello ottenuto, assumendo \(H_0\) vera. Per un test a due code, la formula è:
-    \[
-        \text{p-value} = 2 \cdot P(T > |T_{obs}|) = 2 \cdot (1 - F_{t(n-2)}(|T_{obs}|))
-    \]
-    dove \(F_{t(n-2)}\) è la funzione di ripartizione della distribuzione t-Student con \(n-2\) gradi di libertà. Se il p-value è inferiore al livello di significatività \(\alpha\), si rifiuta \(H_0\).
+	\item \textbf{p-value:} Si calcola la probabilità di osservare un valore
+	      della statistica test altrettanto o più estremo di quello ottenuto,
+	      assumendo \(H_0\) vera. Per un test a due code, la formula è:
+	      \[
+		      \text{p-value} = 2 \cdot P(T > |T_{obs}|) = 2 \cdot (1 -
+		      F_{t(n-2)}(|T_{obs}|))
+	      \]
+	      dove \(F_{t(n-2)}\) è la funzione di ripartizione della distribuzione
+	      t-Student con \(n-2\) gradi di libertà. Se il p-value è inferiore al
+	      livello di significatività \(\alpha\), si rifiuta \(H_0\).
 \end{itemize}
 
 \subsubsection{Intervallo di Confidenza per la Risposta Media}
 
-\paragraph{Obiettivo:} L'obiettivo è stimare un intervallo di valori plausibili non per un singolo punto, ma per la \textbf{risposta media} \(E[Y|x] = \beta_0 + \beta_1 x\), che è una funzione. Poiché la vera retta delle medie è sconosciuta, si costruisce un "intervallo tubolare" o \textbf{banda di confidenza} attorno alla retta stimata (\(B_0 + B_1x\)), all'interno del quale si ha un'elevata fiducia che si trovi la vera retta.
+\paragraph{Obiettivo:} L'obiettivo è stimare un intervallo di valori plausibili
+non per un singolo punto, ma per la \textbf{risposta media} \(E[Y|x] = \beta_0 +
+\beta_1 x\), che è una funzione. Poiché la vera retta delle medie è
+sconosciuta, si costruisce un "intervallo tubolare" o \textbf{banda di
+	confidenza} attorno alla retta stimata (\(B_0 + B_1x\)), all'interno del quale
+si ha un'elevata fiducia che si trovi la vera retta.
 
 \begin{nota}{Stimatore vs Valore Vero}{estimator-vs-true-value}
-È importante distinguere tra:
-\begin{itemize}
-    \item Il \textbf{valore incognito da stimare}: la funzione \( \beta_0 + \beta_1 x \).
-    \item Lo \textbf{stimatore puntuale}: la retta di regressione calcolata dai dati, \( B_0 + B_1 x \).
-\end{itemize}
-Per costruire l'intervallo, si analizza la distribuzione di questo stimatore.
+	È importante distinguere tra:
+	\begin{itemize}
+		\item Il \textbf{valore incognito da stimare}: la funzione \( \beta_0 +
+		      \beta_1 x \).
+		\item Lo \textbf{stimatore puntuale}: la retta di regressione calcolata
+		      dai dati, \( B_0 + B_1 x \).
+	\end{itemize}
+	Per costruire l'intervallo, si analizza la distribuzione di questo
+	stimatore.
 \end{nota}
 
-\paragraph{Proprietà dello Stimatore:} Lo stimatore \(B_0 + B_1x\) è corretto e la sua varianza dipende da \(x\), spiegando la forma a "clessidra" della banda di confidenza.
+\paragraph{Proprietà dello Stimatore:} Lo stimatore \(B_0 + B_1x\) è corretto
+e la sua varianza dipende da \(x\), spiegando la forma a "clessidra" della banda
+di confidenza.
 
-\begin{dimostrazione}{Calcolo di Media e Varianza dello Stimatore}{dem:mean-var-estimator}
-Calcoliamo il valore atteso e la varianza dello stimatore \(\hat{y}(x) = B_0 + B_1x\).
+\begin{dimostrazione}{Calcolo di Media e Varianza dello
+		Stimatore}{dem:mean-var-estimator}
+	Calcoliamo il valore atteso e la varianza dello stimatore \(\hat{y}(x) = B_0
+	+ B_1x\).
 
-\textbf{Valore Atteso (Correttezza)}
-Usando la linearità del valore atteso e sapendo che gli stimatori \(B_0\) e \(B_1\) sono corretti (\(E[B_0]=\beta_0\), \(E[B_1]=\beta_1\)):
-\begin{align*}
-    E[B_0 + B_1x] &= E[B_0] + E[B_1x] \\
-    &= E[B_0] + xE[B_1] \\
-    &= \beta_0 + \beta_1x
-\end{align*}
-Lo stimatore è quindi corretto.
+	\textbf{Valore Atteso (Correttezza)}
+	Usando la linearità del valore atteso e sapendo che gli stimatori \(B_0\) e
+	\(B_1\) sono corretti (\(E[B_0]=\beta_0\), \(E[B_1]=\beta_1\)):
+	\begin{align*}
+		E[B_0 + B_1x] & = E[B_0] + E[B_1x]   \\
+		              & = E[B_0] + xE[B_1]   \\
+		              & = \beta_0 + \beta_1x
+	\end{align*}
+	Lo stimatore è quindi corretto.
 
-\textbf{Varianza}
-Usiamo la formula della varianza di una somma di variabili aleatorie:
-\begin{align*}
-    \text{Var}(B_0 + B_1x) &= \text{Var}(B_0) + \text{Var}(B_1x) + 2\text{Cov}(B_0, B_1x) \\
-    &= \text{Var}(B_0) + x^2\text{Var}(B_1) + 2x\text{Cov}(B_0, B_1)
-\end{align*}
-Sostituendo i termini dalla matrice di covarianza dello stimatore \((\hat{\beta}_0, \hat{\beta}_1)\) si ottiene:
-\[
-    \text{Var}(B_0 + B_1 x) = \sigma^2 \left[ \frac{1}{n} + \frac{(x - \bar{x})^2}{n(\overline{x^2}-\bar{x}^2)} \right]
-\]
+	\textbf{Varianza}
+	Usiamo la formula della varianza di una somma di variabili aleatorie:
+	\begin{align*}
+		\text{Var}(B_0 + B_1x) & = \text{Var}(B_0) + \text{Var}(B_1x) +
+		2\text{Cov}(B_0, B_1x)                                            \\
+		                       & = \text{Var}(B_0) + x^2\text{Var}(B_1) +
+		2x\text{Cov}(B_0, B_1)
+	\end{align*}
+	Sostituendo i termini dalla matrice di covarianza dello stimatore
+	\((\hat{\beta}_0, \hat{\beta}_1)\) si ottiene:
+	\[
+		\text{Var}(B_0 + B_1 x) = \sigma^2 \left[ \frac{1}{n} + \frac{(x -
+				\bar{x})^2}{n(\overline{x^2}-\bar{x}^2)} \right]
+	\]
 \end{dimostrazione}
 
-\paragraph{Formula Finale:} Sfruttando le proprietà dello stimatore e sostituendo \(\sigma\) con la sua stima \(S_e\), si costruisce una quantità pivotale basata sulla distribuzione t-Student. Manipolandola algebricamente, si ottiene l'intervallo di confidenza finale:
+\paragraph{Formula Finale:} Sfruttando le proprietà dello stimatore e
+sostituendo \(\sigma\) con la sua stima \(S_e\), si costruisce una quantità
+pivotale basata sulla distribuzione t-Student. Manipolandola algebricamente, si
+ottiene l'intervallo di confidenza finale:
 \[
-    (B_0 + B_1 x) \pm q \cdot S_e \sqrt{\frac{1}{n} + \frac{(x - \bar{x})^2}{n(\overline{x^2}-\bar{x}^2)}}
+	(B_0 + B_1 x) \pm q \cdot S_e \sqrt{\frac{1}{n} + \frac{(x -
+			\bar{x})^2}{n(\overline{x^2}-\bar{x}^2)}}
 \]
-dove \(q = F_{t(n-2)}^{-1}(1 - \alpha/2)\) è il quantile critico della distribuzione t-Student per un livello di confidenza di \(1-\alpha\).
+dove \(q = F_{t(n-2)}^{-1}(1 - \alpha/2)\) è il quantile critico della
+distribuzione t-Student per un livello di confidenza di \(1-\alpha\).
 
 \paragraph{Calcolo della Varianza con Notazione Matriciale}
-È possibile calcolare le varianze per tutti i punti del dataset in un'unica operazione. Il vettore delle risposte medie stimate è \(\hat{Y} = C \hat{\beta}\), dove \(C\) è la matrice dei regressori \(n \times 2\).
+È possibile calcolare le varianze per tutti i punti del dataset in un'unica
+operazione. Il vettore delle risposte medie stimate è \(\hat{Y} = C
+\hat{\beta}\), dove \(C\) è la matrice dei regressori \(n \times 2\).
 
-Per trovare la varianza di ogni componente di \(\hat{Y}\), si calcola prima l'intera matrice di covarianza di \(\hat{Y}\) usando la regola di trasformazione per vettori aleatori:
+Per trovare la varianza di ogni componente di \(\hat{Y}\), si calcola prima
+l'intera matrice di covarianza di \(\hat{Y}\) usando la regola di trasformazione
+per vettori aleatori:
 \[
-    \text{Cov}(\hat{Y}) = \text{Cov}(C \hat{\beta}) = C \text{Cov}(\hat{\beta}) C^T
+	\text{Cov}(\hat{Y}) = \text{Cov}(C \hat{\beta}) = C \text{Cov}(\hat{\beta})
+	C^T
 \]
 Sostituendo \(\text{Cov}(\hat{\beta}) = \sigma^2 (C^T C)^{-1}\), otteniamo:
 \[
-    \text{Cov}(\hat{Y}) = C \left( \sigma^2 (C^T C)^{-1} \right) C^T = \sigma^2 \left( C (C^T C)^{-1} C^T \right)
+	\text{Cov}(\hat{Y}) = C \left( \sigma^2 (C^T C)^{-1} \right) C^T = \sigma^2
+	\left( C (C^T C)^{-1} C^T \right)
 \]
-Il risultato è una matrice \(n \times n\), e le varianze richieste sono gli elementi sulla sua \textbf{diagonale principale}. Il vettore delle varianze per ogni \(\hat{y}_i\) è quindi:
+Il risultato è una matrice \(n \times n\), e le varianze richieste sono gli
+elementi sulla sua \textbf{diagonale principale}. Il vettore delle varianze per
+ogni \(\hat{y}_i\) è quindi:
 \[
-    \begin{pmatrix} \text{Var}(\hat{y}_1) \\ \vdots \\ \text{Var}(\hat{y}_n) \end{pmatrix} = \text{diag}\left( \text{Cov}(\hat{Y}) \right)
+	\begin{pmatrix} \text{Var}(\hat{y}_1) \\ \vdots \\ \text{Var}(\hat{y}_n)
+	\end{pmatrix} = \text{diag}\left( \text{Cov}(\hat{Y}) \right)
 \]
 
 \subparagraph{Dalla Diagonale all'Intervallo di Confidenza}
-Una volta calcolata la matrice di covarianza delle risposte stimate, \(\text{Cov}(\hat{Y})\), il passo finale è costruire l'intervallo per ciascuna delle \(n\) medie stimate \(\hat{y}_i\).
+Una volta calcolata la matrice di covarianza delle risposte stimate,
+\(\text{Cov}(\hat{Y})\), il passo finale è costruire l'intervallo per ciascuna
+delle \(n\) medie stimate \(\hat{y}_i\).
 
-Il \(i\)-esimo elemento della diagonale, \([\text{Cov}(\hat{Y})]_{ii}\), rappresenta la varianza della \(i\)-esima risposta media stimata, \(\text{Var}(\hat{y}_i)\). Questa varianza dipende però dal parametro ignoto \(\sigma^2\). Per calcolare l'intervallo, dobbiamo prima stimarla, sostituendo \(\sigma^2\) con la sua stima corretta \(S_e^2\).
+Il \(i\)-esimo elemento della diagonale, \([\text{Cov}(\hat{Y})]_{ii}\),
+rappresenta la varianza della \(i\)-esima risposta media stimata,
+\(\text{Var}(\hat{y}_i)\). Questa varianza dipende però dal parametro ignoto
+\(\sigma^2\). Per calcolare l'intervallo, dobbiamo prima stimarla, sostituendo
+\(\sigma^2\) con la sua stima corretta \(S_e^2\).
 
-Lo \textbf{standard error} per la \(i\)-esima risposta media stimata, \(SE(\hat{y}_i)\), è la radice quadrata di questa varianza stimata:
+Lo \textbf{standard error} per la \(i\)-esima risposta media stimata,
+\(SE(\hat{y}_i)\), è la radice quadrata di questa varianza stimata:
 \[
-    SE(\hat{y}_i) = \sqrt{S_e^2 \cdot \left[ C (C^T C)^{-1} C^T \right]_{ii}} = S_e \sqrt{\left[ C (C^T C)^{-1} C^T \right]_{ii}}
+	SE(\hat{y}_i) = \sqrt{S_e^2 \cdot \left[ C (C^T C)^{-1} C^T \right]_{ii}} =
+	S_e \sqrt{\left[ C (C^T C)^{-1} C^T \right]_{ii}}
 \]
 dove \([ \cdot ]_{ii}\) indica l'\(i\)-esimo elemento diagonale della matrice.
 
-L'intervallo di confidenza al livello \(1-\alpha\) per la risposta media al punto \(x_i\) è infine:
+L'intervallo di confidenza al livello \(1-\alpha\) per la risposta media al
+punto \(x_i\) è infine:
 \[
-    \hat{y}_i \pm q \cdot SE(\hat{y}_i)
+	y \in \hat{y} \pm q \cdot SE(\hat{y}_i)
 \]
-dove \(q = F_{t(n-2)}^{-1}(1-\alpha/2)\) è il quantile critico della distribuzione t-Student. Applicando questa formula per ogni \(i=1, \dots, n\), si ottengono i limiti superiore e inferiore che definiscono la banda di confidenza.
+dove \(q = F_{t(n-2)}^{-1}(1-\alpha/2)\) è il quantile critico della
+distribuzione t-Student. Applicando questa formula per ogni \(i=1, \dots, n\),
+si ottengono i limiti superiore e inferiore che definiscono la banda di
+confidenza.
 
 \subsubsection{Intervallo di Predizione per una Osservazione Futura}
 
-\paragraph{Obiettivo:} Per un nuovo valore di input \(\tilde{x}\), predire un intervallo di valori plausibili in cui cadrà una \textbf{singola osservazione futura} \(\tilde{Y}\). L'obiettivo è creare una "banda di predizione" che contenga, con alta probabilità, i futuri punti dati.
+\paragraph{Obiettivo:} Per un nuovo valore di input \(\tilde{x}\), predire un
+intervallo di valori plausibili in cui cadrà una \textbf{singola osservazione
+	futura} \(\tilde{Y}\). L'obiettivo è creare una "banda di predizione" che
+contenga, con alta probabilità, i futuri punti dati.
 
 \paragraph{Differenza Chiave rispetto all'Intervallo di Confidenza:}
-Questo intervallo è sempre più largo di quello di confidenza perché deve tenere conto di \textbf{due fonti di incertezza}:
+Questo intervallo è sempre più largo di quello di confidenza perché deve
+tenere conto di \textbf{due fonti di incertezza}:
 \begin{enumerate}
-    \item L'incertezza sulla stima della retta di regressione (la variabilità dello stimatore \(B_0 + B_1\tilde{x}\)).
-    \item La variabilità intrinseca della singola osservazione futura \(\tilde{Y}\), che fluttua casualmente attorno alla sua media vera (con varianza \(\sigma^2\)).
+	\item L'incertezza sulla stima della retta di regressione (la variabilità
+	      dello stimatore \(B_0 + B_1\tilde{x}\)).
+	\item La variabilità intrinseca della singola osservazione futura
+	      \(\tilde{Y}\), che fluttua casualmente attorno alla sua media vera (con
+	      varianza \(\sigma^2\)).
 \end{enumerate}
 
 \begin{nota}{Larghezza dell'intervallo}{itv_oss_futura}
-Mentre l'intervallo di confidenza per la media si stringe all'aumentare dei dati, quello di predizione rimane sempre relativamente largo per via di questa seconda componente di incertezza.
+	Mentre l'intervallo di confidenza per la media si stringe all'aumentare dei
+	dati, quello di predizione rimane sempre relativamente largo per via di
+	questa seconda componente di incertezza.
 \end{nota}
 
-\paragraph{Proprietà dell'Errore di Predizione:} La costruzione dell'intervallo si basa sull'analisi dell'errore di predizione, definito come la differenza tra il valore futuro e la sua stima: \( \tilde{Y} - (B_0 + B_1\tilde{x}) \). Questo errore ha media zero e la sua varianza è la somma delle varianze delle due componenti di incertezza.
+\paragraph{Proprietà dell'Errore di Predizione:} La costruzione dell'intervallo
+si basa sull'analisi dell'errore di predizione, definito come la differenza tra
+il valore futuro e la sua stima: \( \tilde{Y} - (B_0 + B_1\tilde{x}) \). Questo
+errore ha media zero e la sua varianza è la somma delle varianze delle due
+componenti di incertezza.
 
-\begin{dimostrazione}{Calcolo di Media e Varianza dell'Errore di Predizione}{dem:pred-error-var}
-Consideriamo l'errore di predizione \( e_{pred} = \tilde{Y} - (B_0 + B_1\tilde{x}) \).
+\begin{dimostrazione}{Calcolo di Media e Varianza dell'Errore di
+		Predizione}{dem:pred-error-var}
+	Consideriamo l'errore di predizione \( e_{pred} = \tilde{Y} - (B_0 +
+	B_1\tilde{x}) \).
 
-\textbf{Valore Atteso}
-Il valore atteso dell'errore è zero.
-\begin{align*}
-    E[e_{pred}] &= E[\tilde{Y} - (B_0 + B_1\tilde{x})] \\
-    &= E[\tilde{Y}] - E[B_0 + B_1\tilde{x}] \\
-    &= (\beta_0 + \beta_1\tilde{x}) - (\beta_0 + \beta_1\tilde{x}) = 0
-\end{align*}
+	\textbf{Valore Atteso}
+	Il valore atteso dell'errore è zero.
+	\begin{align*}
+		E[e_{pred}] & = E[\tilde{Y} - (B_0 + B_1\tilde{x})]       \\
+		            & = E[\tilde{Y}] - E[B_0 + B_1\tilde{x}]      \\
+		            & = (\beta_0 + \beta_1\tilde{x}) - (\beta_0 +
+		\beta_1\tilde{x}) = 0
+	\end{align*}
 
-\textbf{Varianza}
-Data l'indipendenza tra l'osservazione futura \(\tilde{Y}\) e gli stimatori \(B_0, B_1\), la varianza della differenza è la somma delle varianze:
-\begin{align*}
-    \text{Var}(e_{pred}) &= \text{Var}(\tilde{Y}) + \text{Var}(B_0 + B_1\tilde{x}) \\
-    &= \sigma^2 + \sigma^2 \left[ \frac{1}{n} + \frac{(\tilde{x} - \bar{x})^2}{n(\overline{x^2}-\bar{x}^2)} \right] \\
-    &= \sigma^2 \left[ 1 + \frac{1}{n} + \frac{(\tilde{x} - \bar{x})^2}{n(\overline{x^2}-\bar{x}^2)} \right]
-\end{align*}
+	\textbf{Varianza}
+	Data l'indipendenza tra l'osservazione futura \(\tilde{Y}\) e gli stimatori
+	\(B_0, B_1\), la varianza della differenza è la somma delle varianze:
+	\begin{align*}
+		\text{Var}(e_{pred}) & = \text{Var}(\tilde{Y}) + \text{Var}(B_0 +
+		B_1\tilde{x})                                                     \\
+		                     & = \sigma^2 + \sigma^2 \left[ \frac{1}{n} +
+			\frac{(\tilde{x} -
+		\bar{x})^2}{n(\overline{x^2}-\bar{x}^2)} \right]                  \\
+		                     & = \sigma^2 \left[ 1 + \frac{1}{n} +
+			\frac{(\tilde{x} -
+				\bar{x})^2}{n(\overline{x^2}-\bar{x}^2)} \right]
+	\end{align*}
 \end{dimostrazione}
 
 \paragraph{Calcolo Matriciale della Varianza di Predizione}
-In analogia con l'intervallo di confidenza, possiamo calcolare le varianze dell'errore di predizione per tutti i punti del dataset simultaneamente. La varianza dell'errore di predizione per una futura osservazione al punto \(x_i\) è la somma di due componenti: la varianza del modello e la varianza della stima della media in quel punto.
+In analogia con l'intervallo di confidenza, possiamo calcolare le varianze
+dell'errore di predizione per tutti i punti del dataset simultaneamente. La
+varianza dell'errore di predizione per una futura osservazione al punto \(x_i\)
+è la somma di due componenti: la varianza del modello e la varianza della stima
+della media in quel punto.
 \[
-    \text{Var}(e_{pred, i}) = \text{Var}(\tilde{Y}_i) + \text{Var}(\hat{y}_i) = \sigma^2 + \text{Var}(\hat{y}_i)
+	\text{Var}(e_{pred, i}) = \text{Var}(\tilde{Y}_i) + \text{Var}(\hat{y}_i) =
+	\sigma^2 + \text{Var}(\hat{y}_i)
 \]
-Per ottenere il vettore di queste varianze per tutti gli \(n\) punti, sommiamo la varianza intrinseca \(\sigma^2\) a ciascun elemento del vettore delle varianze delle risposte medie stimate.
+Per ottenere il vettore di queste varianze per tutti gli \(n\) punti, sommiamo
+la varianza intrinseca \(\sigma^2\) a ciascun elemento del vettore delle
+varianze delle risposte medie stimate.
 
-Ricordiamo che il vettore delle varianze per \(\hat{Y}\) è dato dalla diagonale della sua matrice di covarianza:
+Ricordiamo che il vettore delle varianze per \(\hat{Y}\) è dato dalla diagonale
+della sua matrice di covarianza:
 \[
-    \begin{pmatrix} \text{Var}(\hat{y}_1) \\ \vdots \\ \text{Var}(\hat{y}_n) \end{pmatrix} = \text{diag}\left( \sigma^2 C (C^T C)^{-1} C^T \right)
+	\begin{pmatrix} \text{Var}(\hat{y}_1) \\ \vdots \\ \text{Var}(\hat{y}_n)
+	\end{pmatrix} = \text{diag}\left( \sigma^2 C (C^T C)^{-1} C^T \right)
 \]
 Il vettore delle varianze dell'errore di predizione è quindi:
 \[
-    \begin{pmatrix} \text{Var}(e_{pred, 1}) \\ \vdots \\ \text{Var}(e_{pred, n}) \end{pmatrix} = 
-    \sigma^2 \cdot \mathbf{1}_n + \text{diag}\left( \sigma^2 C (C^T C)^{-1} C^T \right)
-    = \sigma^2 \left( \mathbf{1}_n + \text{diag}\left( C (C^T C)^{-1} C^T \right) \right)
+	\begin{pmatrix} \text{Var}(e_{pred, 1}) \\ \vdots \\ \text{Var}(e_{pred, n})
+	\end{pmatrix} =
+	\sigma^2 \cdot \mathbf{1}_n + \text{diag}\left( \sigma^2 C (C^T C)^{-1} C^T
+	\right)
+	= \sigma^2 \left( \mathbf{1}_n + \text{diag}\left( C (C^T C)^{-1} C^T
+	\right) \right)
 \]
 dove \(\mathbf{1}_n\) è un vettore colonna di \(n\) uni.
 
-Lo \textbf{standard error} per la \(i\)-esima risposta media stimata, \(SE(\hat{y}_i)\), è la radice quadrata di questa varianza stimata:
+Lo \textbf{standard error} per la \(i\)-esima risposta futura stimata,
+\(SE(\tilde{y}_i)\), è la radice quadrata di questa varianza stimata:
 \[
-    SE(\hat{y}_i) = \sqrt{S_e^2 \cdot \left(1 + \left[ C (C^T C)^{-1} C^T \right]_{ii}\right)} = S_e \sqrt{1 + \left[ C (C^T C)^{-1} C^T \right]_{ii}}
+	SE(\tilde{y}_i) = \sqrt{S_e^2 \cdot \left(1 + \left[ C (C^T C)^{-1} C^T
+			\right]_{ii}\right)} = S_e \sqrt{1 + \left[ C (C^T C)^{-1} C^T \right]_{ii}}
 \]
 dove \([ \cdot ]_{ii}\) indica l'\(i\)-esimo elemento diagonale della matrice.
 \[
-    \hat{y}_i \pm q \cdot SE(\hat{y}_i)
+	\tilde{y}_i \in \hat{y}_i \pm q \cdot SE(\tilde{y}_i)
 \]
-dove \(q = F_{t(n-2)}^{-1}(1-\alpha/2)\) è il quantile critico della distribuzione t-Student. Applicando questa formula per ogni \(i=1, \dots, n\), si ottengono i limiti superiore e inferiore che definiscono la banda di confidenza.
+dove \(q = F_{t(n-2)}^{-1}(1-\alpha/2)\) è il quantile critico della
+distribuzione t-Student. Applicando questa formula per ogni \(i=1, \dots, n\),
+si ottengono i limiti superiore e inferiore che definiscono la banda di
+confidenza.
 
 
 \subsection{Regressione Lineare Multipla}
 
-La regressione lineare multipla è un'estensione del modello semplice che permette di utilizzare \(p\) variabili indipendenti (predittori) per modellare una singola variabile dipendente \(Y\).
+La regressione lineare multipla è un'estensione del modello semplice che
+permette di utilizzare \(p\) variabili indipendenti (predittori) per modellare
+una singola variabile dipendente \(Y\).
 
 \subsubsection{Modello e Notazione Matriciale}
 
-Il modello per una singola osservazione \(i\) assume che la risposta sia una combinazione lineare dei predittori, più un termine di errore Gaussiano:
+Il modello per una singola osservazione \(i\) assume che la risposta sia una
+combinazione lineare dei predittori, più un termine di errore Gaussiano:
 \[
-    Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip} + e_i, \quad \text{con } e_i \sim \mathcal{N}(0, \sigma^2)
+	Y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \dots + \beta_p x_{ip} +
+	e_i, \quad \text{con } e_i \sim \mathcal{N}(0, \sigma^2)
 \]
 
 \begin{definizione}{Modello Matriciale}{multi-reg-model-def}
-Per gestire il modello in modo efficiente, si adotta la notazione matriciale. L'intero set di \(n\) equazioni può essere scritto come:
-\[
-    Y = X\beta + e
-\]
-dove:
-\begin{itemize}
-    \item \(Y \in \mathbb{R}^n\) è il vettore delle osservazioni della variabile dipendente.
-    \item \(X \in \mathbb{R}^{n \times (p+1)}\) è la \textbf{matrice dei predittori}. La sua prima colonna è composta da soli 1 per tenere conto dell'intercetta \(\beta_0\).
-    \item \(\beta \in \mathbb{R}^{p+1}\) è il vettore (ignoto) dei parametri del modello.
-    \item \(e \in \mathbb{R}^n\) è il vettore degli errori, con distribuzione \(e \sim \mathcal{N}(0, \sigma^2 I_n)\).
-\end{itemize}
-Da questo ne consegue che il vettore delle risposte \(Y\) segue una distribuzione Normale multivariata:
-\[
-    Y \sim \mathcal{N}(X\beta, \sigma^2 I_n)
-\]
+	Per gestire il modello in modo efficiente, si adotta la notazione
+	matriciale. L'intero set di \(n\) equazioni può essere scritto come:
+	\[
+		Y = X\beta + e
+	\]
+	dove:
+	\begin{itemize}
+		\item \(Y \in \mathbb{R}^n\) è il vettore delle osservazioni della
+		      variabile dipendente.
+		\item \(X \in \mathbb{R}^{n \times (p+1)}\) è la \textbf{matrice dei
+			      predittori}. La sua prima colonna è composta da soli 1 per tenere conto
+		      dell'intercetta \(\beta_0\).
+		\item \(\beta \in \mathbb{R}^{p+1}\) è il vettore (ignoto) dei
+		      parametri del modello.
+		\item \(e \in \mathbb{R}^n\) è il vettore degli errori, con
+		      distribuzione \(e \sim \mathcal{N}(0, \sigma^2 I_n)\).
+	\end{itemize}
+	Da questo ne consegue che il vettore delle risposte \(Y\) segue una
+	distribuzione Normale multivariata:
+	\[
+		Y \sim \mathcal{N}(X\beta, \sigma^2 I_n)
+	\]
 \end{definizione}
 
 \subsubsection{Stima dei Parametri (OLS e MLE)}
-Sotto l'assunzione di errori Gaussiani, lo stimatore di Massima Verosimiglianza (MLE) coincide con lo stimatore dei Minimi Quadrati Ordinari (Ordinary Least Squares, OLS). L'obiettivo è trovare il vettore di coefficienti \(\hat{\beta}\) che minimizza la somma dei quadrati dei residui (SSR).
+Sotto l'assunzione di errori Gaussiani, lo stimatore di Massima Verosimiglianza
+(MLE) coincide con lo stimatore dei Minimi Quadrati Ordinari (Ordinary Least
+Squares, OLS). L'obiettivo è trovare il vettore di coefficienti \(\hat{\beta}\)
+che minimizza la somma dei quadrati dei residui (SSR).
 
 \begin{proposizione}{Stimatore OLS per \(\beta\)}{ols-estimator-beta}
-Lo stimatore dei minimi quadrati per il vettore dei parametri \(\beta\) è dato da:
-\begin{align*}
-    \hat{\beta} = (X^T X)^{-1} X^T Y && (\text{\Cref{thm:cochran-ml}})
-\end{align*}
-Questo stimatore è corretto (cioè \(E[\hat{\beta}] = \beta\)) e la sua distribuzione è:
-\begin{align*}
-    \hat{\beta} \sim \mathcal{N}(\beta, \sigma^2(X^T X)^{-1}) && (\text{\Cref{prop:gamma-dist}})
-\end{align*}
+	Lo stimatore dei minimi quadrati per il vettore dei parametri \(\beta\) è
+	dato da:
+	\begin{align*}
+		\hat{\beta} = (X^T X)^{-1} X^T Y &  & (\text{\Cref{thm:cochran-ml}})
+	\end{align*}
+	Questo stimatore è corretto (cioè \(E[\hat{\beta}] = \beta\)) e la sua
+	distribuzione è:
+	\begin{align*}
+		\hat{\beta} \sim \mathcal{N}(\beta, \sigma^2(X^T X)^{-1}) &  &
+		(\text{\Cref{prop:gamma-dist}})
+	\end{align*}
 \end{proposizione}
 
-\begin{definizione}{Stimatore della Varianza dell'Errore \(\sigma^2\)}{error-variance-estimator}
-La stima della varianza dell'errore \(\sigma^2\) si basa sulla somma dei quadrati dei residui, \(SSR = \|Y - X\hat{\beta}\|^2\). Lo stimatore corretto (unbiased) per \(\sigma^2\) è:
-\[
-    S_e^2 = \frac{SSR}{n-p-1}
-\]
-Il denominatore \(n-p-1\) rappresenta i gradi di libertà, dati dal numero di osservazioni \(n\) meno il numero di parametri stimati (\(p+1\)).
+\begin{definizione}{Stimatore della Varianza dell'Errore
+		\(\sigma^2\)}{error-variance-estimator}
+	La stima della varianza dell'errore \(\sigma^2\) si basa sulla somma dei
+	quadrati dei residui, \(SSR = \|Y - X\hat{\beta}\|^2\). Lo stimatore
+	corretto (unbiased) per \(\sigma^2\) è:
+	\[
+		S_e^2 = \frac{SSR}{n-p-1}
+	\]
+	Il denominatore \(n-p-1\) rappresenta i gradi di libertà, dati dal numero
+	di osservazioni \(n\) meno il numero di parametri stimati (\(p+1\)).
 \end{definizione}
 
 \begin{nota}{Legame con il Teorema di Cochran}{cochran-link-multi}
-Il Teorema di Cochran è fondamentale per l'inferenza. Esso garantisce che:
-\begin{enumerate}
-    \item La quantità \( \frac{SSR}{\sigma^2} \) segue una distribuzione \(\chi^2\) con \(n-p-1\) gradi di libertà.
-    \item Lo stimatore dei coefficienti \(\hat{\beta}\) è statisticamente indipendente da \(SSR\) (e quindi da \(S_e^2\)).
-\end{enumerate}
-Questi due punti sono cruciali perché permettono di costruire la statistica t-Student per il test di ipotesi.
+	Il Teorema di Cochran è fondamentale per l'inferenza. Esso garantisce che:
+	\begin{enumerate}
+		\item La quantità \( \frac{SSR}{\sigma^2} \) segue una distribuzione
+		      \(\chi^2\) con \(n-p-1\) gradi di libertà.
+		\item Lo stimatore dei coefficienti \(\hat{\beta}\) è statisticamente
+		      indipendente da \(SSR\) (e quindi da \(S_e^2\)).
+	\end{enumerate}
+	Questi due punti sono cruciali perché permettono di costruire la statistica
+	t-Student per il test di ipotesi.
 \end{nota}
 
 \subsubsection{Inferenza sui Singoli Coefficienti (t-test)}
 
-\paragraph{Obiettivo:} Verificare se una singola variabile di ingresso \(x_j\) abbia un potere predittivo statisticamente significativo su \(Y\), al netto delle altre variabili presenti nel modello.
+\paragraph{Obiettivo:} Verificare se una singola variabile di ingresso \(x_j\)
+abbia un potere predittivo statisticamente significativo su \(Y\), al netto
+delle altre variabili presenti nel modello.
 
-\paragraph{Ipotesi:} Per ogni coefficiente \(\beta_j\) (con \(j=1, \dots, p\)), il sistema di ipotesi è:
+\paragraph{Ipotesi:} Per ogni coefficiente \(\beta_j\) (con \(j=1, \dots, p\)),
+il sistema di ipotesi è:
 \begin{itemize}
-    \item \textbf{Ipotesi Nulla $H_0$}: $\beta_j = 0$ (la variabile \(x_j\) non ha un'influenza lineare su \(Y\)).
-    \item \textbf{Ipotesi Alternativa $H_1$}: $\beta_j \neq 0$ (la variabile \(x_j\) ha un'influenza lineare significativa su \(Y\)).
+	\item \textbf{Ipotesi Nulla $H_0$}: $\beta_j = 0$ (la variabile \(x_j\) non
+	      ha un'influenza lineare su \(Y\)).
+	\item \textbf{Ipotesi Alternativa $H_1$}: $\beta_j \neq 0$ (la variabile
+	      \(x_j\) ha un'influenza lineare significativa su \(Y\)).
 \end{itemize}
 
-\paragraph{Procedura di Derivazione:} La costruzione della statistica test segue una procedura a più passi, che parte dalla distribuzione dello stimatore.
+\paragraph{Procedura di Derivazione:} La costruzione della statistica test segue
+una procedura a più passi, che parte dalla distribuzione dello stimatore.
 \begin{enumerate}
-    \item \textbf{Distribuzione dello Stimatore \(B_j\):} Partiamo dalla distribuzione del vettore degli stimatori \(\hat{\beta} \sim \mathcal{N}(\beta, \sigma^2(X^T X)^{-1})\). La distribuzione del singolo stimatore \(B_j\) è la sua marginale, anch'essa Normale. La sua varianza è il j-esimo elemento sulla diagonale della matrice di covarianza.
-    \[
-        B_j \sim \mathcal{N}\left(\beta_j, \sigma^2[(X^T X)^{-1}]_{jj}\right)
-    \]
+	\item \textbf{Distribuzione dello Stimatore \(B_j\):} Partiamo dalla
+	      distribuzione del vettore degli stimatori \(\hat{\beta} \sim
+	      \mathcal{N}(\beta, \sigma^2(X^T X)^{-1})\). La distribuzione del singolo
+	      stimatore \(B_j\) è la sua marginale, anch'essa Normale. La sua varianza è
+	      il j-esimo elemento sulla diagonale della matrice di covarianza.
+	      \[
+		      B_j \sim \mathcal{N}\left(\beta_j, \sigma^2[(X^T
+		      X)^{-1}]_{jj}\right)
+	      \]
 
-    \item \textbf{Funzione Ancillare (Normale):} Standardizzando \(B_j\), otteniamo una variabile \(\mathcal{N}(0,1)\) che però dipende ancora dal parametro ignoto \(\sigma\).
-    \[
-        \frac{B_j - \beta_j}{\sigma\sqrt{[(X^T X)^{-1}]_{jj}}} \sim \mathcal{N}(0,1)
-    \]
-    
-    \item \textbf{Funzione Ancillare (t-Student):} Sostituiamo \(\sigma\) con la sua stima \(S_e\). Poiché \(S_e\) è indipendente da \(B\) (per il Teorema di Cochran), la distribuzione cambia da Normale a t-Student con \(n-p-1\) gradi di libertà.
-    \[
-        \frac{B_j - \beta_j}{S_e\sqrt{[(X^T X)^{-1}]_{jj}}} \sim t(n-p-1)
-    \]
-    
-    \item \textbf{Statistica Test Finale:} Valutiamo la funzione ancillare sotto l'ipotesi nulla \(H_0: \beta_j = 0\) per ottenere la statistica test finale.
-    \[
-        T_j = \frac{B_j}{S_e\sqrt{[(X^T X)^{-1}]_{jj}}}
-    \]
+	\item \textbf{Funzione Ancillare (Normale):} Standardizzando \(B_j\),
+	      otteniamo una variabile \(\mathcal{N}(0,1)\) che però dipende ancora dal
+	      parametro ignoto \(\sigma\).
+	      \[
+		      \frac{B_j - \beta_j}{\sigma\sqrt{[(X^T X)^{-1}]_{jj}}} \sim
+		      \mathcal{N}(0,1)
+	      \]
+
+	\item \textbf{Funzione Ancillare (t-Student):} Sostituiamo \(\sigma\) con la
+	      sua stima \(S_e\). Poiché \(S_e\) è indipendente da \(B\) (per il Teorema
+	      di Cochran), la distribuzione cambia da Normale a t-Student con \(n-p-1\)
+	      gradi di libertà.
+	      \[
+		      \frac{B_j - \beta_j}{S_e\sqrt{[(X^T X)^{-1}]_{jj}}} \sim t(n-p-1)
+	      \]
+
+	\item \textbf{Statistica Test Finale:} Valutiamo la funzione ancillare sotto
+	      l'ipotesi nulla \(H_0: \beta_j = 0\) per ottenere la statistica test finale.
+	      \[
+		      T_j = \frac{B_j}{S_e\sqrt{[(X^T X)^{-1}]_{jj}}}
+	      \]
 \end{enumerate}
 
 \begin{nota}{Coefficiente Normalizzato}{normalized-coeff-note}
-La statistica \(T_j\) viene anche chiamata \textbf{coefficiente normalizzato}.
-\begin{itemize}
-    \item Sotto \(H_0\), ci aspettiamo che \(T_j\) assuma valori vicini a 0.
-    \item Sotto \(H_1\), la distribuzione di \(T_j\) ha una media diversa da 0, portando a valori più estremi.
-\end{itemize}
+	La statistica \(T_j\) viene anche chiamata \textbf{coefficiente
+		normalizzato}.
+	\begin{itemize}
+		\item Sotto \(H_0\), ci aspettiamo che \(T_j\) assuma valori vicini a 0.
+		\item Sotto \(H_1\), la distribuzione di \(T_j\) ha una media diversa da
+		      0, portando a valori più estremi.
+	\end{itemize}
 \end{nota}
 
-\paragraph{Metodi di Decisione:} Il test può essere eseguito calcolando la regione di accettazione o, più comunemente, il p-value.
+\paragraph{Metodi di Decisione:} Il test può essere eseguito calcolando la
+regione di accettazione o, più comunemente, il p-value.
 
 \begin{itemize}
-    \item \textbf{Regione di Accettazione (R.A.):} Si definisce un intervallo \([-q, +q]\) dove \(q = F_{t(n-p-1)}^{-1}(1-\alpha/2)\) è il quantile critico. Se \(|T_j| > q\), si rifiuta \(H_0\).
-    \item \textbf{p-value (\(\alpha_j^*\)):} Si calcola la probabilità di osservare un valore altrettanto o più estremo di \(|T_j|\). Per un test a due code, la formula è:
-    \[
-        \alpha_j^* = 2 \cdot (1 - F_{t(n-p-1)}(|T_j|))
-    \]
-    dove \(F\) è la funzione di ripartizione della distribuzione t-Student.
+	\item \textbf{Regione di Accettazione (R.A.):} Si definisce un intervallo
+	      \([-q, +q]\) dove \(q = F_{t(n-p-1)}^{-1}(1-\alpha/2)\) è il quantile
+	      critico. Se \(|T_j| > q\), si rifiuta \(H_0\).
+	\item \textbf{p-value (\(\alpha_j^*\)):} Si calcola la probabilità di
+	      osservare un valore altrettanto o più estremo di \(|T_j|\). Per un test a
+	      due code, la formula è:
+	      \[
+		      \alpha_j^* = 2 \cdot (1 - F_{t(n-p-1)}(|T_j|))
+	      \]
+	      dove \(F\) è la funzione di ripartizione della distribuzione
+	      t-Student.
 \end{itemize}
 
-\paragraph{Interpretazione dei Risultati:} La conclusione del test dipende dal valore del p-value calcolato.
+\paragraph{Interpretazione dei Risultati:} La conclusione del test dipende dal
+valore del p-value calcolato.
 \begin{itemize}
-    \item \(\alpha_j^* \gtrsim 30\%\): il p-value è molto grande. Il potere predittivo della variabile \(x_j\) è trascurabile e si può considerare di rimuoverla dal modello.
-    \item \(\alpha_j^* \lesssim 0.1\%\): il p-value è molto piccolo. La variabile \(x_j\) ha un chiaro e forte potere predittivo.
-    \item \(0.1\% < \alpha_j^* < 30\%\): la decisione dipende dal contesto, dal task specifico e dalla strategia di selezione del modello adottata.
+	\item \(\alpha_j^* \gtrsim 30\%\): il p-value è molto grande. Il potere
+	      predittivo della variabile \(x_j\) è trascurabile e si può considerare di
+	      rimuoverla dal modello.
+	\item \(\alpha_j^* \lesssim 0.1\%\): il p-value è molto piccolo. La
+	      variabile \(x_j\) ha un chiaro e forte potere predittivo.
+	\item \(0.1\% < \alpha_j^* < 30\%\): la decisione dipende dal contesto, dal
+	      task specifico e dalla strategia di selezione del modello adottata.
 \end{itemize}
 
 
 \subsection{Il Problema dei Test Multipli e la Correzione di Bonferroni}
 
-Quando eseguiamo un test di ipotesi per ogni predittore in un modello di regressione multipla, stiamo conducendo \textit{test multipli} simultaneamente. Questo introduce un problema statistico significativo: l'inflazione della probabilità di commettere un errore di I specie.
+Quando eseguiamo un test di ipotesi per ogni predittore in un modello di
+regressione multipla, stiamo conducendo \textit{test multipli} simultaneamente.
+Questo introduce un problema statistico significativo: l'inflazione della
+probabilità di commettere un errore di I specie.
 
 \paragraph{Il Problema: Inflazione dell'Errore di Tipo I}
-Il livello di significatività \(\alpha\) (solitamente 0.05) rappresenta la probabilità di rifiutare erroneamente l'ipotesi nulla (commettere un errore di I specie, o falso positivo) in un \textit{singolo} test. Se eseguiamo \(n\) test indipendenti, la probabilità di ottenere \textit{almeno un} falso positivo nell'intera famiglia di test aumenta drasticamente. Questa probabilità cumulativa è nota come \textbf{Family-Wise Error Rate (FWER)}.
+Il livello di significatività \(\alpha\) (solitamente 0.05) rappresenta la
+probabilità di rifiutare erroneamente l'ipotesi nulla (commettere un errore di
+I specie, o falso positivo) in un \textit{singolo} test. Se eseguiamo \(n\) test
+indipendenti, la probabilità di ottenere \textit{almeno un} falso positivo
+nell'intera famiglia di test aumenta drasticamente. Questa probabilità
+cumulativa è nota come \textbf{Family-Wise Error Rate (FWER)}.
 
 \begin{nota}{Limite Superiore per il FWER}{fwer-note}
-La probabilità di commettere almeno un errore di I tipo nell'intera famiglia di test, ovvero il FWER o \(\alpha_{\text{globale}}\), cresce con il numero di test \(n\). Sebbene una stima esatta possa essere complessa, è possibile derivare un limite superiore utilizzando la disuguaglianza di Boole (nota anche come "union bound"). Questa disuguaglianza ci fornisce un'importante garanzia sul controllo dell'errore.
+	La probabilità di commettere almeno un errore di I tipo nell'intera
+	famiglia di test, ovvero il FWER o \(\alpha_{\text{globale}}\), cresce con
+	il numero di test \(n\). Sebbene una stima esatta possa essere complessa, è
+	possibile derivare un limite superiore utilizzando la disuguaglianza di
+	Boole (nota anche come "union bound"). Questa disuguaglianza ci fornisce
+	un'importante garanzia sul controllo dell'errore.
 \end{nota}
 
-\begin{dimostrazione}{Limite superiore per \(\alpha_{\text{globale}}\)}{fwer-proof}
-Definiamo l'errore di I specie globale come la probabilità di commettere almeno un errore di I specie, assumendo che tutte le ipotesi nulle (\(H_0\)) siano vere per ogni test.
-\begin{align*}
-\alpha_{\text{globale}} &= P(\text{almeno un errore di I specie} \mid \text{tutte le } H_0 \text{ sono vere}) \\
-&= P\left(\bigcup_{i=1}^{n} \{\text{rifiuto } H_0 \text{ nel test } i\} \middle| \text{ tutte le } H_0 \text{ sono vere} \right) \\
-&\leq \sum_{i=1}^{n} P(\text{errore di I specie nel test } i \mid H_0 \text{ è vera nel test } i) \quad (\text{disuguaglianza di Boole})
-\end{align*}
-Se il livello di significatività per ogni singolo test è lo stesso, ovvero \(\alpha_i = \bar{\alpha}\) per \(i=1, \dots, n\), allora la relazione si semplifica come segue:
-\[
-\alpha_{\text{globale}} \leq \sum_{i=1}^{n} \bar{\alpha} = n \cdot \bar{\alpha}
-\]
-Questo dimostra che il FWER è limitato superiormente dal numero di test moltiplicato per il livello di significatività individuale. Ad esempio, con \(n=20\) predittori e \(\alpha=0.05\), la probabilità di ottenere almeno un falso positivo può arrivare fino a \(20 \cdot 0.05 = 1\), rendendo quasi certo un risultato errato.
+\begin{dimostrazione}{Limite superiore per
+		\(\alpha_{\text{globale}}\)}{fwer-proof}
+	Definiamo l'errore di I specie globale come la probabilità di commettere
+	almeno un errore di I specie, assumendo che tutte le ipotesi nulle (\(H_0\))
+	siano vere per ogni test.
+	\begin{align*}
+		\alpha_{\text{globale}} & = P(\text{almeno un errore di I specie} \mid
+		\text{tutte le } H_0 \text{ sono vere})                                  \\
+		                        & = P\left(\bigcup_{i=1}^{n} \{\text{rifiuto }
+		H_0 \text{ nel test } i\} \middle| \text{ tutte
+		le } H_0 \text{ sono vere} \right)                                       \\
+		                        & \leq \sum_{i=1}^{n} P(\text{errore di I specie
+			nel test } i \mid H_0 \text{ è vera nel test }
+		i) \quad (\text{disuguaglianza di Boole})
+	\end{align*}
+	Se il livello di significatività per ogni singolo test è lo stesso, ovvero
+	\(\alpha_i = \bar{\alpha}\) per \(i=1, \dots, n\), allora la relazione si
+	semplifica come segue:
+	\[
+		\alpha_{\text{globale}} \leq \sum_{i=1}^{n} \bar{\alpha} = n \cdot
+		\bar{\alpha}
+	\]
+	Questo dimostra che il FWER è limitato superiormente dal numero di test
+	moltiplicato per il livello di significatività individuale. Ad esempio, con
+	\(n=20\) predittori e \(\alpha=0.05\), la probabilità di ottenere almeno un
+	falso positivo può arrivare fino a \(20 \cdot 0.05 = 1\), rendendo quasi
+	certo un risultato errato.
 \end{dimostrazione}
 
 \paragraph{La Soluzione: Correzione di Bonferroni}
-Per controllare questo errore cumulativo e mantenere il FWER al di sotto di una soglia desiderata, si possono usare delle procedure di correzione. La più nota e semplice è la correzione di Bonferroni, che deriva direttamente dalla disuguaglianza appena dimostrata.
+Per controllare questo errore cumulativo e mantenere il FWER al di sotto di una
+soglia desiderata, si possono usare delle procedure di correzione. La più nota
+e semplice è la correzione di Bonferroni, che deriva direttamente dalla
+disuguaglianza appena dimostrata.
 
 \begin{definizione}{Correzione di Bonferroni}{bonferroni-corr}
-La procedura consiste nel fissare un livello di significatività globale desiderato (es. \(\alpha_{\text{globale}} = 0.05\)) e dividere questo valore per il numero di test \(n\) che si intende eseguire. Il nuovo livello di significatività \(\alpha_{\text{corretto}}\) per ogni singolo test sarà:
-\[
-\alpha_{\text{corretto}} = \frac{\alpha_{\text{globale}}}{n}
-\]
-Un risultato per un singolo test verrà considerato statisticamente significativo solo se il suo p-value è inferiore a questa nuova soglia, che è molto più restrittiva. In questo modo si garantisce che \(n \cdot \alpha_{\text{corretto}} = n \cdot \frac{\alpha_{\text{globale}}}{n} = \alpha_{\text{globale}}\), mantenendo il FWER sotto controllo.
+	La procedura consiste nel fissare un livello di significatività globale
+	desiderato (es. \(\alpha_{\text{globale}} = 0.05\)) e dividere questo valore
+	per il numero di test \(n\) che si intende eseguire. Il nuovo livello di
+	significatività \(\alpha_{\text{corretto}}\) per ogni singolo test sarà:
+	\[
+		\alpha_{\text{corretto}} = \frac{\alpha_{\text{globale}}}{n}
+	\]
+	Un risultato per un singolo test verrà considerato statisticamente
+	significativo solo se il suo p-value è inferiore a questa nuova soglia, che
+	è molto più restrittiva. In questo modo si garantisce che \(n \cdot
+	\alpha_{\text{corretto}} = n \cdot \frac{\alpha_{\text{globale}}}{n} =
+	\alpha_{\text{globale}}\), mantenendo il FWER sotto controllo.
 \end{definizione}
 
-\begin{nota}{Il Costo della Correzione: Perdita di Potenza}{bonferroni-power-loss}
-La correzione di Bonferroni è molto conservativa e ha un "prezzo altissimo": \textbf{abbassa drasticamente la potenza statistica} dei singoli test. Questo significa che, mentre si è più protetti dai falsi positivi, aumenta la probabilità di commettere errori di II tipo (falsi negativi), non riuscendo a identificare degli effetti che in realtà esistono.
+\begin{nota}{Il Costo della Correzione: Perdita di
+		Potenza}{bonferroni-power-loss}
+	La correzione di Bonferroni è molto conservativa e ha un "prezzo
+	altissimo": \textbf{abbassa drasticamente la potenza statistica} dei singoli
+	test. Questo significa che, mentre si è più protetti dai falsi positivi,
+	aumenta la probabilità di commettere errori di II tipo (falsi negativi),
+	non riuscendo a identificare degli effetti che in realtà esistono.
 \end{nota}
 
 \paragraph{Raccomandazioni Pratiche}
 \begin{itemize}
-\item \textbf{Ridurre il numero di test:} Ove possibile, è buona norma ridurre il numero di ipotesi da testare \textit{prima} di iniziare l'analisi, ad esempio tramite una pre-selezione delle feature basata su conoscenza del dominio.
-\item \textbf{Pre-specificare le ipotesi:} È metodologicamente cruciale decidere quali test eseguire \textit{prima} di osservare i dati, per evitare pratiche di "p-hacking" o "cherry-picking" che invalidano i risultati statistici.
+	\item \textbf{Ridurre il numero di test:} Ove possibile, è buona norma
+	      ridurre il numero di ipotesi da testare \textit{prima} di iniziare
+	      l'analisi, ad esempio tramite una pre-selezione delle feature basata su
+	      conoscenza del dominio.
+	\item \textbf{Pre-specificare le ipotesi:} È metodologicamente cruciale
+	      decidere quali test eseguire \textit{prima} di osservare i dati, per evitare
+	      pratiche di "p-hacking" o "cherry-picking" che invalidano i risultati
+	      statistici.
 \end{itemize}
