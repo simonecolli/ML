@@ -303,7 +303,7 @@ Gli stimatori MLE dei parametri si trovano minimizzando la loss:
 \]
 equivalente a minimizzare:
 \[
-    W(\gamma) = \| Y - C(x) \cdot \gamma \|^2 \qquad \text{(norma del vettore
+    W(\gamma) = \| Y - C(x) \cdot \gamma \|^2 \qquad \text{(norma quadra del vettore
     differenza)}
 \]
 dove $C(x)$ è una matrice in $\mathbb{R}^{n \times k}$ le cui colonne sono date dai vettori:
@@ -314,7 +314,7 @@ c_j(x(i)) \\
 c_j(x(i))
 \end{bmatrix}, \quad i = 1, \dots, n,\, j = 1, \dots, k
 \]
-Al variare di $\gamma$, l'immagine $\gamma \cdot C(x)$ è un sottospazio vettoriale di dimensione $k$ in $\mathbb{R}^n$. Lo stimatore $\hat{\gamma}$ è la proiezione ortogonale di $Y$ su questo sottospazio.
+Al variare di $\gamma$, l'immagine $C(x) \cdot \gamma$ è un sottospazio vettoriale di dimensione $k$ in $\mathbb{R}^n$. Lo stimatore $\hat{\gamma}$ è la proiezione ortogonale di $Y$ su questo sottospazio.
 
 Si definisce la somma dei quadrati dei residui come:
 \[
