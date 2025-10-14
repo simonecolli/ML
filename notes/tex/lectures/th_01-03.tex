@@ -48,6 +48,18 @@ Ecco un riassunto delle formule per calcolare la probabilità di un evento usand
 
 Un uso molto comune della CDF è il calcolo del \textbf{quantile}, ovvero l'inversione della formula per trovare il valore \( x \) corrispondente a una data probabilità cumulata.
 
+\begin{nota}{Quantile}{quantile}
+Il \textbf{quantile} di livello \(p \in (0,1)\) di una variabile aleatoria \(X\) è il valore soglia \(q_p\) tale che:
+\[
+P(X \leq q_p) = p.
+\]
+In altre parole, il quantile è l’inversa della funzione di ripartizione cumulativa (CDF): 
+\[
+q_p = F_X^{-1}(p).
+\]
+Esempi importanti sono la \textit{mediana} (\(p=0.5\)), i \textit{quartili} (\(p=0.25,0.75\)) e in generale i \textit{percentili}. 
+Essi permettono di descrivere in modo sintetico la distribuzione di una variabile e sono usati in statistica descrittiva, test d’ipotesi e intervalli di confidenza.
+\end{nota}
 \begin{esempio}{Trovare un quantile da una probabilità}{inversione_gamma}
 Supponiamo di voler trovare il valore \( x \) per cui la probabilità che una variabile con distribuzione Gamma \( \gamma(\alpha, \beta) \) sia minore o uguale a \( x \) sia almeno del 5\%.
 \begin{enumerate}
@@ -226,6 +238,7 @@ Una variabile aleatoria \(X\) segue una distribuzione Gaussiana con media \(\mu\
 \[
 f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\left\{ -\frac{(x-\mu)^2}{2\sigma^2} \right\}, \quad x \in \mathbb{R}
 \]
+
 \end{definizione}
 
 \begin{nota}{Teorema del Limite Centrale (TLC)}{tlc}
@@ -242,6 +255,13 @@ Il TLC afferma che le grandezze casuali che sono la \textbf{somma} di tanti picc
     \[ F_{\mathcal{N}(\mu,\sigma^2)}(x) = P(X \le x) = \Phi\left(\frac{x-\mu}{\sigma}\right) \]
 \end{itemize}
 \end{proposizione}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/gaussiana.png}
+    \caption{Esempio di distribuzioni Gaussiane con \(\mu=0\) e \(\sigma\) variabile.}
+    \label{fig:gaussiana}
+\end{figure}
 
 \subsection{Distribuzione Lognormale}
 La Lognormale descrive grandezze che derivano dal \emph{prodotto} di molti fattori casuali.
@@ -264,6 +284,13 @@ Una versione "moltiplicativa" del TLC afferma che le grandezze che sono il \text
 \end{itemize}
 \end{proposizione}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/lognormale.png}
+    \caption{Esempio di distribuzioni Lognormali con \(\mu=0\) e \(\sigma\) variabile.}
+    \label{fig:lognormale}
+\end{figure}
+
 \subsection{Distribuzione Esponenziale}
 L'Esponenziale è la distribuzione di base per i tempi di attesa.
 
@@ -283,6 +310,13 @@ Il parametro \(\lambda\) è chiamato \textbf{tasso} o \textbf{intensità}, e rap
     \item \textbf{Applicazioni:} Modella tempi di attesa per eventi improvvisi e imprevedibili come guasti, telefonate, decadimenti radioattivi.
 \end{itemize}
 \end{proposizione}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/esponenziale.png}
+    \caption{Esempio di distribuzioni Esponenziali con \(\lambda\) variabile.}
+    \label{fig:esponenziale}
+\end{figure}
 
 \subsection{Distribuzione Gamma}
 La distribuzione Gamma è una generalizzazione dell'Esponenziale e della Chi-Quadro, molto flessibile per modellare tempi di attesa.
@@ -304,6 +338,13 @@ dove \(\Gamma(\alpha)\) è la funzione Gamma di Eulero. Una parametrizzazione al
     \[ E(X) = \frac{\alpha}{\lambda}, \quad \text{Var}(X) = \frac{\alpha}{\lambda^2} \]
 \end{itemize}
 \end{proposizione}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/gamma.png}
+    \caption{Esempio di distribuzioni Gamma con \(\alpha\) variabili e \(\lambda\) costante.}
+    \label{fig:gamma}
+\end{figure}
 
 \begin{nota}{Casi Particolari della Gamma}{gamma_casi}
 \begin{itemize}
@@ -327,6 +368,13 @@ Derivando dalla Gamma, si ottiene:
 \[ E(W) = k, \quad \text{Var}(W) = 2k \]
 Inoltre, poiché \( Z^2 \sim \chi^2(1) \), si ha che \(\chi^2(1) \equiv \text{Gamma}(1/2, 1/2)\).
 \end{nota}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/chi2.png}
+    \caption{Esempio di distribuzioni Chi-Quadro con \(k\) variabili.}
+    \label{fig:chi2}
+\end{figure}
 
 \subsection{Il Processo di Poisson}
 Il processo di Poisson descrive il verificarsi di eventi casuali nel tempo.
@@ -366,6 +414,13 @@ P(X=k) = \binom{n}{k} p^k (1-p)^{n-k}, \quad k=0, 1, \dots, n \text{}
 \end{itemize}
 \end{proposizione}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/binomiale.png}
+    \caption{Esempio di distribuzioni Binomiali con \(n = 20\) e \(p\) variabile.}
+    \label{fig:binomiale}
+\end{figure}
+
 \subsection{Distribuzione di Poisson}
 
 \begin{definizione}{Distribuzione di Poisson}{poisson}
@@ -375,8 +430,23 @@ P(X=k) = \frac{\nu^k e^{-\nu}}{k!}, \quad k=0, 1, 2, \dots \text{}
 \]
 \end{definizione}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/poisson.png}
+    \caption{Esempio di distribuzioni di Poisson con \(\nu\) variabile.}
+    \label{fig:poisson}
+\end{figure}
+
 \begin{nota}{Relazione con la Binomiale}{pois_binom}
 La distribuzione di Poisson è il limite della Binomiale per \(n\) grande e \(p\) piccolo. In pratica, se \(p \ll 1\), allora \(\text{Bin}(n,p) \approx \text{Pois}(np)\). Per questo motivo, è usata per contare il numero di successi (eventi rari) in scenari con un gran numero di prove, come il numero di gol in una partita o il numero di iscritti a un corso.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/binomiale_vs_poisson.png}
+    \caption{Esempio di approssimazione della Binomiale con la Poisson.}
+    \label{fig:binomiale_vs_poisson}
+\end{figure}
+
 \end{nota}
 
 \begin{proposizione}{Proprietà della Poisson}{pois_props}
@@ -406,6 +476,13 @@ La funzione \texttt{rand()} nei linguaggi di programmazione genera tipicamente c
 \end{itemize}
 \end{proposizione}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/uniforme.png}
+    \caption{Esempio di distribuzioni Uniformi con \(a\) e \(b\) variabili.}
+    \label{fig:uniforme}
+\end{figure}
+
 \subsection{Distribuzione Beta}
 
 \begin{definizione}{Distribuzione Beta}{beta}
@@ -415,6 +492,13 @@ f_X(t) = c_p t^{\alpha-1}(1-t)^{\beta-1}, \quad \text{per } 0 < t < 1 \text{}
 \]
 È una distribuzione molto flessibile, definita su un intervallo limitato.
 \end{definizione}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/beta.png}
+    \caption{Esempio di distribuzioni Beta con \(\alpha\) e \(\beta\) variabili.}
+    \label{fig:beta}
+\end{figure}
 
 \begin{nota}{Interpretazione della Beta}{beta_interp}
 \begin{itemize}
@@ -441,6 +525,13 @@ T = \frac{Z}{\sqrt{W/k}} \sim t(k) \text{}
 \end{itemize}
 \end{proposizione}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/t_student.png}
+    \caption{Esempio di distribuzioni t di Student con \(k\) variabile.}
+    \label{fig:t_student}
+\end{figure}
+
 \subsection{Distribuzione F di Fisher}
 
 \begin{definizione}{Distribuzione F di Fisher}{f_fisher}
@@ -450,6 +541,13 @@ Se \(W_1 \sim \chi^2(m)\) e \(W_2 \sim \chi^2(n)\) sono indipendenti, allora:
 F = \frac{W_1/m}{W_2/n} \sim F(m,n) \text{}
 \]
 \end{definizione}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/f_fisher.png}
+    \caption{Esempio di distribuzioni F di Fisher con \((m,n)\) variabili.}
+    \label{fig:f_fisher}
+\end{figure}
 
 \begin{nota}{Uso della Distribuzione F}{f_uso}
 È usata principalmente per confrontare due varianze campionarie. I parametri \(m\) e \(n\) sono i gradi di libertà del numeratore e del denominatore, rispettivamente.
@@ -463,6 +561,13 @@ Una v.a. \(X\) segue una distribuzione Uniforme Discreta se può assumere \(n\) 
 P(X = i) = \frac{1}{n}, \quad \text{per } i=1, 2, \dots, n
 \]
 \end{definizione}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/uniforme_discreta.png}
+    \caption{Esempio di distribuzioni Uniformi Discrete su \(\{1, 2, \dots, 6\}\).}
+    \label{fig:uniforme_discreta}
+\end{figure}
 
 \begin{proposizione}{Proprietà dell'Uniforme Discreta}{unif_discreta_props}
 \begin{itemize}
@@ -498,6 +603,13 @@ P(X=k) = p(1-p)^{k-1}, \quad k=1, 2, 3, \dots
 Rappresenta il numero di prove necessarie per ottenere il primo successo in un processo di Bernoulli.
 \end{definizione}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/geometrica.png}
+    \caption{Esempio di distribuzioni Geometriche con \(p\) variabile.}
+    \label{fig:geometrica}
+\end{figure}
+
 \begin{proposizione}{Proprietà della Geometrica}{geom_props}
 \begin{itemize}
     \item È la versione discreta della distribuzione Esponenziale.
@@ -505,7 +617,6 @@ Rappresenta il numero di prove necessarie per ottenere il primo successo in un p
     \[ E(X) = \frac{1}{p}, \quad \text{Var}(X) = \frac{1-p}{p^2} \]
 \end{itemize}
 \end{proposizione}
-
 
 \subsection{Distribuzione Binomiale Negativa}
 Questa distribuzione generalizza la Geometrica al caso di \(r\) successi.
@@ -519,6 +630,21 @@ Esistono due definizioni comuni per la Binomiale Negativa \(\text{NegBin}(r,p)\)
     \[ P(\tilde{X}=k) = \binom{k+r-1}{k}p^r(1-p)^{k}, \quad k=0, 1, 2, \dots \]
 \end{enumerate}
 \end{definizione}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/negbin.png}
+    \caption{Esempio di distribuzioni Binomiali Negative con \(r\) variabile e \(p\) costante per numero di insuccessi.}
+    \label{fig:negbin}
+\end{figure}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/th_01_03/negbin_trials.png}
+    \caption{Esempio di distribuzioni Binomiali Negative con \(r\) variabile e \(p\) costante per numero di prove.}
+    \label{fig:negbin_trials}
+\end{figure}
 
 \begin{proposizione}{Proprietà della Binomiale Negativa}{negbin_props}
 \begin{itemize}

@@ -85,8 +85,6 @@ Dove:
         \end{nota}
 \end{itemize}
 
-
-
 \section{Regressione Lineare Semplice}\label{sec:regressione}
 
 La \textbf{regressione lineare semplice} è uno dei modelli più basilari in statistica e machine learning. In questo caso, si cerca di modellare la relazione tra una variabile dipendente \( Y \) e una variabile indipendente \( X \).
@@ -107,6 +105,13 @@ dove:
 \item \( \epsilon_i \) è l'errore, che si assume essere normalmente distribuito con media zero e varianza costante \( \sigma^2 \):
         \[ \epsilon_i \sim \mathcal{N}(0, \sigma^2). \]
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/th_16_18/regressione_lineare_semplice.png}
+    \caption{Esempio di regressione lineare semplice. La retta di regressione approssima la relazione tra la variabile indipendente \( X \) e la variabile dipendente \( Y \).}
+    \label{fig:regressione_lineare_semplice}
+\end{figure}
 
 Il modello descrive una \textbf{retta di regressione} che approssima la relazione tra \( X \) e \( Y \).
 
@@ -130,6 +135,13 @@ Il \textbf{baricentro} della regressione è il punto medio dei dati osservati, d
 \overline{x} = \frac{1}{n} \sum_{i=1}^n x_i, \quad \overline{y} = \frac{1}{n} \sum_{i=1}^n y_i
 \]
 \end{nota}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/th_16_18/regressione_lineare_semplice2.png}
+    \caption{Esempio di regressione lineare semplice con retta passante per il baricentro dei dati e curve di distribuzione gaussiana degli errori attorno alla retta.}
+    \label{fig:regressione_lineare_semplice_gaussianine_e_baricentro}
+\end{figure}
 
 \subsection{Stima dei parametri tramite Maximum Likelihood (MLE)}
 

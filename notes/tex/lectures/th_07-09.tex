@@ -207,6 +207,13 @@ L'obiettivo di questa trasformazione è spostare la distribuzione dei dati in mo
     \item \textbf{A livello di campione:} Questa operazione equivale a sottrarre da ogni dato la media della sua colonna: \(Y_{ij} = X_{ij} - \bar{X}_j\).
 \end{itemize}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_07_09/centering_transformation.png}
+    \caption{Esempio di centratura di un vettore aleatorio bidimensionale. La distribuzione originale (a sinistra) viene traslata in modo che la sua media coincida con l'origine (a destra).}
+    \label{fig:centering_transformation}
+\end{figure}
+
 \subsubsection{Standardizzare le Varianze}
 L'obiettivo è scalare le componenti del vettore in modo che abbiano tutte
 varianza unitaria (pari a 1).
@@ -227,6 +234,13 @@ L'elemento \((i,j)\) di \(C(Y)\) è:
 \]
 \end{itemize}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_07_09/standardize_variances.png}
+    \caption{Esempio di standardizzazione delle varianze di un vettore aleatorio bidimensionale. La distribuzione originale (a sinistra) viene trasformata in modo che le sue varianze siano tutte pari a 1 (a destra).}
+    \label{fig:standardize_variances}
+\end{figure}
+
 \paragraph{Standardizzazione Completa (Z-score)}
 Questa trasformazione combina le due precedenti per ottenere un vettore le cui
 componenti hanno media 0 e varianza 1.
@@ -241,3 +255,10 @@ componenti hanno media 0 e varianza 1.
     sua matrice di covarianza coincide con la matrice di correlazione di \(X\).
     \[ \mu_Y = 0, \quad \Sigma_Y = \rho(X) \]
 \end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_07_09/z_transformation.png}
+    \caption{Esempio di standardizzazione (Z-score) di un vettore aleatorio bidimensionale. La distribuzione originale (a sinistra) viene trasformata in modo che le sue componenti abbiano media 0 (in centro) e varianza 1 (a destra).}
+    \label{fig:z_transformation}
+\end{figure}

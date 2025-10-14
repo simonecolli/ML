@@ -73,6 +73,13 @@ del dataset. Il processo è il seguente:
 Le colonne della matrice \(\mathbf{Y}\) sono le nuove coordinate dei dati, che
 risultano scorrelate e ordinate per varianza decrescente.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_10_12/rotation_transformation.png}
+    \caption{Esempio di rotazione di un vettore aleatorio bidimensionale. La distribuzione originale centrata (a sinistra) viene ruotata in modo che i suoi assi principali coincidano con le direzioni di massima varianza (a destra).}
+    \label{fig:rotation_transformation}
+\end{figure}
+
 \subsection{Autovalori e autovettori della covarianza}
 
 % NUOVO: Contesto per i teoremi seguenti.
@@ -255,12 +262,28 @@ Ci sono due modalità comuni per eseguire la PCA su un dataset \(\mathbf{X}\):
 \begin{enumerate}
     % NUOVO: Notazione e terminologia aggiornate
   \item Centrare il dataset, poi eseguire la PCA sulla \textbf{matrice di
-  covarianza campionaria} \(\hat{\Sigma}\).
+  covarianza campionaria} \(\hat{\Sigma}\) (Vedi
+  immagine \ref{fig:pca_progressione1}).
   \item Centrare il dataset, \textbf{standardizzare} ogni variabile (ottenendo
   un dataset \(\mathbf{Z}\) con media 0 e varianza 1 per ogni riga), e poi
   eseguire la PCA sulla \textbf{matrice di correlazione} del dataset originale
-  (che è equivalente alla matrice di covarianza di \(\mathbf{Z}\)).
+  (che è equivalente alla matrice di covarianza di \(\mathbf{Z}\)). (Vedi
+  immagine \ref{fig:pca_progressione2}).
 \end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_10_12/pca_progressione1.png}
+    \caption{Esempio di primo approccio alla PCA: 1) Dati originali. 2) Dati centrati. 3) PCA. 4) Dati standardizzati dopo la PCA.}
+    \label{fig:pca_progressione1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_10_12/pca_progressione2.png}
+    \caption{Esempio di secondo approccio alla PCA: 1) Dati originali. 2) Standardizzazione completa. 3) PCA. 4) Dati standardizzati dopo la PCA.}
+    \label{fig:pca_progressione2}
+\end{figure}
 
 Questi due approcci corrispondono a:
 
@@ -385,6 +408,89 @@ standard} eseguire l'Analisi Fattoriale sulla \textbf{matrice di correlazione}
 invece che su quella di covarianza. Questo equivale a standardizzare le
 variabili (portandole a media 0 e varianza 1) prima di procedere con l'analisi,
 garantendo che ogni variabile contribuisca in modo equo.
+Mentre la PCA si concentra nel massimizzare la varianza, la Factor Analysis
+cerca di spiegare la varianza condivisa tra le variabili attraverso fattori
+latenti. Quindi, la PCA può essere considerata come un caso particolare di
+Factor Analysis, dove tutti i fattori sono assunti ortogonali e indipendenti.
+
+\subsection{Riduzione dimensionale e scelta del numero di componenti}
+
+Quando \( m \) (il numero di variabili) è grande, esistono molte componenti
+principali con varianza piccola. La PCA cerca di ridurre la dimensione del
+vettore \( X \) mantenendo la varianza totale e riducendo la complessità del
+modello. La somma delle varianze prima e dopo la trasformazione è costante e
+conserva la varianza totale:
+\[
+\text{Var}(X_1) + \dots + \text{Var}(X_m) = \text{Var}(Y_1) + \dots +
+\text{Var}(Y_m) = \text{varianza totale}
+\]
+Questa relazione implica che la traccia della matrice di covarianza \( \Sigma \)
+è uguale alla somma degli autovalori di \( \Sigma \), ovvero:
+\[
+\text{tr}(\Sigma) = \text{tr}(\Lambda)
+\]
+dove \( \Lambda \) è la matrice diagonale degli autovalori.
+
+\subsubsection{Distribuzione degli autovalori}
+
+Tipicamente, gli autovalori \( \lambda_1 \geq \lambda_2 \geq \dots \geq
+\lambda_m > 0 \) sono ordinati in modo decrescente. Questo ordine riflette la
+quantità di varianza spiegata da ciascuna componente principale. I componenti
+principali con autovalori maggiori spiegano una porzione maggiore della varianza
+totale.
+
+Un approccio comune è quello di utilizzare un grafico dei cosiddetti
+\textbf{cambiamenti di pendenza} (come lo scree plot \ref{fig:screeplot}) per determinare il numero
+di componenti principali da mantenere. Un cambiamento significativo nella
+pendenza suggerisce il numero ottimale di componenti da considerare:
+Nel grafico sopra, le prime 3 componenti sembrano spiegare la maggior parte
+della varianza.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/th_10_12/screeplot.png}
+    \caption{Esempio di scree plot per la selezione del numero di componenti principali. Si osserva un cambiamento di pendenza significativo dopo la terza componente, suggerendo che le prime tre componenti catturano la maggior parte della varianza.}
+    \label{fig:screeplot}
+\end{figure}
+
+\subsection{Quando standardizzare i dati}
+
+Quando i dati hanno unità di misura diverse, è importante standardizzarli
+prima di applicare la PCA. Questo è cruciale, poiché le variabili con unità
+più grandi tenderanno a dominare la varianza, influenzando fortemente le
+componenti principali.
+
+Se dopo la PCA i dati non vengono standardizzati, si ottiene una rotazione dei
+dati senza alcuna scalatura. In questo caso, la PCA non fornirà una riduzione
+della dimensione che tiene conto della varianza relativa di ciascuna variabile,
+ma solo una rotazione rispetto alla distribuzione dei dati. Di conseguenza, la
+distanza tra i punti sarà influenzata solo dalla loro distribuzione e non dalla
+varianza delle variabili.
+
+\begin{nota}{Standardizzazione dopo PCA}{pca-standardizzazione}
+Standardizzare i dati prima della PCA è fondamentale per ridurre il rischio di
+amplificare il rumore nelle componenti con bassa varianza. La standardizzazione
+aiuta a bilanciare l'influenza di variabili con scale diverse.
+\end{nota}
+
+\subsection{Effetto della standardizzazione}
+
+Quando i dati vengono standardizzati dopo la PCA, la varianza di ciascuna
+componente principale è distribuita in modo più uniforme, evitando che
+variabili con bassa varianza distorcano i risultati. Il grafico sottostante
+mostra l'effetto della standardizzazione:
+
+Nel grafico:
+- \( \mu \) e \( \Sigma \) indicano i dati originali con la loro media e
+covarianza,
+- \( 0, \Sigma \) indica i dati centrati ma non standardizzati,
+- \( 0, I \) rappresenta i dati dopo standardizzazione.
+
+\begin{nota}{Importanza della standardizzazione}{pca-scaling}
+La standardizzazione dopo la PCA è essenziale quando le variabili hanno scale
+diverse, poiché permette una comparazione equa tra le variabili e riduce
+l'influenza di quelle con una varianza maggiore.
+\end{nota}
 
 \section{Distribuzioni Multidimensionali Notevoli}
 
@@ -418,6 +524,13 @@ di covarianza $\Sigma$ ne definisce la forma e l'orientamento.
 Geometricamente, per $p=2$, la funzione di densità di probabilità (PDF) ha una
 forma a campana tridimensionale. Le curve di livello di questa campana sono
 ellissi concentriche centrate in $\mu$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/th_10_12/gaussiana_multidimensionale_2d3d.png}
+    \caption{Esempio di distribuzione Gaussiana bivariata con media $\mu$ e matrice di covarianza $\Sigma$. Le curve di livello sono ellissi che rappresentano le regioni di uguale densità di probabilità.}
+    \label{fig:gaussiana_bivariata}
+\end{figure}
 
 \begin{proposizione}{Funzione di Densità di Probabilità (PDF)}{gaussiana-pdf}
 Se la matrice di covarianza $\Sigma$ è invertibile (ovvero definita positiva),
@@ -605,6 +718,14 @@ $$
 definita sul simplesso $x_i \ge 0$ e $\sum x_i = 1$. $C_\alpha$ è una costante
 di normalizzazione che dipende dalla funzione Gamma.
 \end{proposizione}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/th_10_12/dirichlet.png}
+    \caption{Esempio di distribuzione di Dirichlet tramite simplesso 2D. Le regioni colorate rappresentano diverse modalità della distribuzione.}
+    \label{fig:dirichlet}
+\end{figure}
 
 \begin{proposizione}{Valore Atteso}{dirichlet-valore-atteso}
 Il valore atteso di un vettore $X \sim \text{Dirichlet}(\alpha)$ è:
